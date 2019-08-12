@@ -1,0 +1,7 @@
+output
+settings
+*.sfr
+*.dep
+rel_*
+rel.py
+find_new_firwamre.py
