@@ -1,0 +1,11 @@
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\bin\Debug\MiniIMU.exe.config
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\bin\Debug\MiniIMU.exe
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\bin\Debug\MiniIMU.pdb
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.csprojAssemblyReference.cache
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.csproj.ResolveComReference.cache
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\Uranus.MainForm.resources
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.Properties.Resources.resources
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.csproj.GenerateResource.cache
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.csproj.CoreCompileInputs.cache
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.exe
+C:\Users\YX\Desktop\gitResp\Uranus\Uranus2_OSDemo\obj\x86\Debug\MiniIMU.pdb
