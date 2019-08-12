@@ -1,0 +1,10 @@
+{
+    "port": "COM11",
+    "baudrate": 460800,
+    "report_datatype": {
+      "Expanding Information": false,
+      "acc": true,
+      "gyr": false,
+      "quat": false
+    }
+}
