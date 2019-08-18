@@ -23,6 +23,11 @@ class HipnucFrame_ErrorFrame_Exception(HipnucFrame_Exception):
     def __init__(self,err='Error frame'):
         Exception.__init__(self,err)
 
+def _parse_data_packet_0x90(data_section:list,node_num = None):
+    module_id = {
+        "id": data_section[0],
+    }
+    return module_id
 
 def _parse_data_packet_0x61(data_section:list,node_num = None):
     HI221GW_property = {
@@ -58,6 +63,34 @@ def _parse_data_packet_0x71(data_section:list,node_num = None):
 
     return quaternion
 
+def _parse_data_packet_0xD1(data_section:list,node_num = None):
+    quaternion_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 16
+    W = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+    t_pos += 4
+    X = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+    t_pos += 4
+    Y = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+    t_pos += 4
+    Z = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+
+    temp_dic = {
+        "W":W,
+        "X":X,
+        "Y":Y,
+        "Z":Z
+    }
+    quaternion_list.append(temp_dic)
+
+    quaternion = {
+        "quat":quaternion_list
+    }
+
+    return quaternion
+
 def _parse_data_packet_0x75(data_section:list,node_num = None):
     acc_list = []
 
@@ -81,6 +114,56 @@ def _parse_data_packet_0x75(data_section:list,node_num = None):
     }
 
     return acc
+
+def _parse_data_packet_0xA0(data_section:list,node_num = None):
+    acc_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 6
+    X = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Y = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Z = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+
+    temp_dic = {
+        "X":X,
+        "Y":Y,
+        "Z":Z
+    }
+    acc_list.append(temp_dic)
+
+    acc = {
+        "acc":acc_list
+    }
+
+    return acc
+
+def _parse_data_packet_0xA5(data_section:list,node_num = None):
+    linacc_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 6
+    X = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Y = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Z = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+
+    temp_dic = {
+        "X":X,
+        "Y":Y,
+        "Z":Z
+    }
+    linacc_list.append(temp_dic)
+
+    linacc = {
+        "linacc_list":linacc_list
+    }
+
+    return linacc
 
 def _parse_data_packet_0x78(data_section:list,node_num = None):
     gyr_list = []
@@ -106,34 +189,261 @@ def _parse_data_packet_0x78(data_section:list,node_num = None):
 
     return gyr
 
+def _parse_data_packet_0xB0(data_section:list,node_num = None):
+    gyr_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 6
+    X = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Y = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Z = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+
+    temp_dic = {
+        "X":X,
+        "Y":Y,
+        "Z":Z
+    }
+    gyr_list.append(temp_dic)
+
+    gyr = {
+        "gyr":gyr_list
+    }
+
+    return gyr
+
+def _parse_data_packet_0xC0(data_section:list,node_num = None):
+    mag_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 6
+    X = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Y = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    t_pos += 2
+    Z = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+
+    temp_dic = {
+        "X":X,
+        "Y":Y,
+        "Z":Z
+    }
+    mag_list.append(temp_dic)
+
+    mag = {
+        "mag":mag_list
+    }
+
+    return mag
+
+def _parse_data_packet_0xD0(data_section:list,node_num = None):
+    eul_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 6
+    Pitch = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    Pitch = Pitch/100
+    t_pos += 2
+    Roll = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    Roll = Roll/100
+    t_pos += 2
+    Yaw = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+    Yaw = Yaw/10
+
+    temp_dic = {
+        "Pitch":Pitch,
+        "Roll":Roll,
+        "Yaw":Yaw
+    }
+    eul_list.append(temp_dic)
+
+    int_eul = {
+        "int_eul":eul_list
+    }
+
+    return int_eul
+
+def _parse_data_packet_0x72(data_section:list,node_num = None):
+    eul_list = []
+
+    for pos in range(node_num):
+        t_pos = pos * 6
+        Pitch = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+        Pitch = Pitch/100
+        t_pos += 2
+        Roll = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+        Roll = Roll/100
+        t_pos += 2
+        Yaw = int(struct.unpack("<h", bytes(data_section[t_pos:t_pos + 2]))[0])
+        Yaw = Yaw/10
+
+        temp_dic = {
+            "Pitch":Pitch,
+            "Roll":Roll,
+            "Yaw":Yaw
+        }
+        eul_list.append(temp_dic)
+
+    int_eul = {
+        "int_eul":eul_list
+    }
+
+    return int_eul
+
+def _parse_data_packet_0xD9(data_section:list,node_num = None):
+    float_eul_list = []
+
+    # for pos in range(node_num):
+    pos = 0
+    t_pos = pos * 12
+    Pitch = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+    t_pos += 4
+    Roll = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+    t_pos += 4
+    Yaw = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+
+    temp_dic = {
+        "Pitch":Pitch,
+        "Roll":Roll,
+        "Yaw":Yaw
+    }
+
+    float_eul_list.append(temp_dic)
+
+    float_eul = {
+        "float_eul":float_eul_list
+    }
+
+    return float_eul
+
+def _parse_data_packet_0x60(data_section:list,node_num = None):
+    test_8f_list = []
+    for pos in range(8):
+        t_pos = pos * 4
+        test_f = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+
+        test_8f_list.append(test_f)
+
+    test_8f = {
+        "test_8f": test_8f_list,
+    }
+
+    return test_8f
+
 data_packet_properties = {
+    0x90: {
+        "type": "id",
+        "id_len": 1,
+        "data_len": 1,
+        "parse method": _parse_data_packet_0x90,
+        "gw_data":False
+    },
     0x61:{
         "type":"Expanding Information",
         "id_len":1,
         "data_len":3,
-        "parse method":_parse_data_packet_0x61
+        "parse method":_parse_data_packet_0x61,
+        "gw_data":True
     },
-    # quat
+    # gw_quat
     0x71:{
         "type":"quat",
         "id_len":1,
         "data_len":16,
-        "parse method":_parse_data_packet_0x71
+        "parse method":_parse_data_packet_0x71,
+        "gw_data":True
     },
-    # acc
+    # quat
+    0xD1: {
+        "type": "quat",
+        "id_len": 1,
+        "data_len": 16,
+        "parse method": _parse_data_packet_0xD1,
+        "gw_data":False
+    },
+    # gw_acc
     0x75:{
         "type":"acc",
         "id_len": 1,
         "data_len": 6,
-        "parse method": _parse_data_packet_0x75
+        "parse method": _parse_data_packet_0x75,
+        "gw_data": True
     },
-    #gyr
+    # acc
+    0xA0: {
+        "type": "acc",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0xA0,
+        "gw_data": False
+    },
+    # linacc
+    0xA5: {
+        "type": "linacc",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0xA5,
+        "gw_data": False
+    },
+    #gw_gyr
     0x78:{
         "type":"gyr",
         "id_len": 1,
         "data_len": 6,
-        "parse method": _parse_data_packet_0x78
-    }
+        "parse method": _parse_data_packet_0x78,
+        "gw_data": True
+    },
+    # gyr
+    0xB0: {
+        "type": "gyr",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0xB0,
+        "gw_data": False
+    },
+    # mag
+    0xC0: {
+        "type": "mag",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0xC0,
+        "gw_data": False
+    },
+    # int_eul
+    0xD0: {
+        "type": "int_eul",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0xD0,
+        "gw_data": False
+    },
+    # gw_int_eul
+    0x72: {
+        "type": "int_eul",
+        "id_len": 1,
+        "data_len": 6,
+        "parse method": _parse_data_packet_0x72,
+        "gw_data": True
+    },
+    # float_eul
+    0xD9: {
+        "type": "float_eul",
+        "id_len": 1,
+        "data_len": 12,
+        "parse method": _parse_data_packet_0xD9,
+        "gw_data": False
+    },
+    0x60: {
+        "type": "test_8f",
+        "id_len": 1,
+        "data_len": 32,
+        "parse method": _parse_data_packet_0x60,
+        "gw_data": False
+    },
 }
 
 def crc16_update(buffer_list, cal_len, cal_pos, crc=0):
@@ -224,7 +534,10 @@ def _verify_frame_crc(buffer_list, header_pos=0):
 def intercept_one_complete_frame(buffer_list):
     # 找帧头
     header_pos = find_frameheader(buffer_list)
-    frame_len = int(struct.unpack("<h", bytes(buffer_list[header_pos + 2:header_pos + 2 + 2]))[0])
+    try:
+        frame_len = int(struct.unpack("<H", bytes(buffer_list[header_pos + 2:header_pos + 2 + 2]))[0])
+    except struct.error:
+        raise HipnucFrame_NotCompleted_Exception
     end_pos = header_pos + 5 + frame_len
     # 验证帧长度
     _verify_frame_length(buffer_list, header_pos)
@@ -248,12 +561,16 @@ def extraction_information_from_frame(frame_list:list, inf_fifo,report_datatype:
         HI221GW_property = data_packet_properties[0X61]["parse method"](data_frame_list[1:])
         node_num = HI221GW_property["CNT"]
 
-        if report_datatype[data_packet_properties[0x61]["type"]] == True:
-            data_dic.update(HI221GW_property)
+        try:
+            if report_datatype[data_packet_properties[0x61]["type"]] == True:
+                data_dic.update(HI221GW_property)
+        #report type default值为False,即未在config文件中配置的默认为False
+        except KeyError:
+            pass
 
         data_frame_list = data_frame_list[1 + 3:]
     else:
-        #若0x61帧，则节点数默认为8
+        #若无0x61帧，则节点数默认为8
         node_num = 8
     #遍历解析数据段内包含的数据
     while len(data_frame_list) > 0:
@@ -261,13 +578,22 @@ def extraction_information_from_frame(frame_list:list, inf_fifo,report_datatype:
 
             temp_dic = data_packet_properties[data_frame_list[0]]["parse method"](data_frame_list[1:],node_num)
 
-            if report_datatype[data_packet_properties[data_frame_list[0]]["type"]] == True:
-                data_dic.update(temp_dic)
-            else:
+            try:
+                if report_datatype[data_packet_properties[data_frame_list[0]]["type"]] == True:
+                    data_dic.update(temp_dic)
+                else:
+                    pass
+
+            except KeyError:
                 pass
 
+            if data_packet_properties[data_frame_list[0]]["gw_data"] == True:
+                rel_node_num = node_num
+            else:
+                rel_node_num = 1
+
             id_len = data_packet_properties[data_frame_list[0]]["id_len"]
-            data_len = data_packet_properties[data_frame_list[0]]["data_len"] * node_num
+            data_len = data_packet_properties[data_frame_list[0]]["data_len"] * rel_node_num
             data_frame_list = data_frame_list[id_len + data_len:]
         else:
             raise HipnucFrame_ErrorFrame_Exception

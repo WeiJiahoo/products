@@ -2,9 +2,13 @@
     "port": "COM11",
     "baudrate": 460800,
     "report_datatype": {
-      "Expanding Information": false,
+      "Expanding Information": true,
       "acc": true,
-      "gyr": false,
-      "quat": false
+      "quat": true,
+      "id": true,
+      "gyr": true,
+      "mag": true,
+      "int_eul": true,
+      "test_8f": true
     }
 }
