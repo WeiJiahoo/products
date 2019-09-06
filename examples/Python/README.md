@@ -121,27 +121,93 @@ pip install -r requirements.txt
 
 ​	`"Expanding Information"`:
 
-​	数据包ID 0x61，数据帧扩展信息，包含接收机ID和无线节点数目。类型为**布尔型**。
+​		数据包ID 0x61，数据帧扩展信息，包含接收机ID和无线节点数目。类型为**布尔型**。
 
-​	若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
 
 ​	`"acc"`：
 
-​	数据包ID 0x75 ，加速度信息。类型为**布尔型**。
+​		数据包ID 0x75 ，<u>HI221GW接收机专用</u>，加速度信息集合。类型为**布尔型**。
 
-​	若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		或，
+
+​		数据包ID 0xA0，加速度信息。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		<u>同一个模组不会同时发送这两个ID的数据包。</u>
 
 ​	`"gyr"`：
 
-​	数据包ID 0x78 ，角速度信息。类型为**布尔型**。
+​		数据包ID 0x78 ，<u>HI221GW接收机专用</u>，角速度信息集合。类型为**布尔型**。
 
-​	若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		或，
+
+​		数据包ID 0xB0 ，角速度信息。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		<u>同一个模组不会同时发送这两个ID的数据包。</u>
 
 ​	`"quat"`：
 
-​	数据包ID 0x71 ，四元数信息。类型为**布尔型**。
+​		数据包ID 0x71 ，<u>HI221GW接收机专用</u>，四元数信息集合。类型为**布尔型**。
 
-​	若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		或，
+
+​		数据包ID 0xD1 ，四元数信息。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		<u>同一个模组不会同时发送这两个ID的数据包。</u>
+
+​	`"id"`：
+
+​		数据包ID 0x90 ，用户ID。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​	`"linacc"`：
+
+​		数据包ID 0xA5，线性加速度信息。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		`"mag"`：
+
+​		数据包ID 0xC0，磁场强度信息。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​	`"int_eul"`：
+
+​		数据包ID 0x72，<u>HI221GW接收机专用</u>，欧拉角整形格式集合。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​		或，
+
+​		数据包ID 0xD0，欧拉角整形格式。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​	`"float_eul"`：
+
+​		数据包ID 0xD9，欧拉角浮点格式。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
+
+​	`"test_8f"`：
+
+​		数据包ID 0x60，测试数据。类型为**布尔型**。
+
+​		若为`true`，hipnuc_module将会返回该数据，若为`false`，hipnuc_module不会返回该数据。
 
 
 
