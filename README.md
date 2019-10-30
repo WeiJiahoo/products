@@ -9,3 +9,7 @@
 | pc_tools         | Windows上位机              |
 | usb_uart_drivers | Windows/Linux 串口驱动程序 |
 
+
+
+[下载压缩包](https://github.com/hipnuc/products/archive/master.zip)
+
