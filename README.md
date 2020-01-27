@@ -1,5 +1,11 @@
 # HIPNUC  产品资料
 
+Readme.md ([简体中文](https://github.com/hipnuc/products/README.md))
+
+Readme.md ([繁體中文](https://github.com/hipnuc/products/README_tc.md))
+
+Readme.md ([English](https://github.com/hipnuc/products/README_en.md))
+
 
 | 文件夹           | 说明               |
 | ---------------- | ------------------ |
