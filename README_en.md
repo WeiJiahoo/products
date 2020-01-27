@@ -1,10 +1,10 @@
 # HIPNUC  产品资料
 
-Readme ([简体中文](https://github.com/hipnuc/products/blob/master/readme.md))
+Readme ([简体中文](https://github.com/hipnuc/products/blob/master/README.md))
 
-Readme ([繁體中文](https://github.com/hipnuc/products/blob/master/readme_tc.md))
+Readme ([繁體中文](https://github.com/hipnuc/products/blob/master/README_tc.md))
 
-Readme ([English](https://github.com/hipnuc/products/blob/master/readme_en.md))
+Readme ([English](https://github.com/hipnuc/products/blob/master/README_en.md))
 
 
 | Folder           | Description                              |
