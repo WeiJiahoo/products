@@ -334,6 +334,20 @@ def _parse_data_packet_0x60(data_section:list,node_num = None):
 
     return test_8f
 
+def _parse_data_packet_0xF0(data_section:list,node_num = None):
+    prs_list = []
+    # for pos in range(node_num):
+    t_pos = 0
+    prs_f = float(struct.unpack("<f", bytes(data_section[t_pos:t_pos + 4]))[0])
+
+    prs_list.append(prs_f)
+
+    prs = {
+        "prs": prs_list,
+    }
+
+    return prs
+
 data_packet_properties = {
     0x90: {
         "type": "id",
@@ -442,6 +456,13 @@ data_packet_properties = {
         "id_len": 1,
         "data_len": 32,
         "parse method": _parse_data_packet_0x60,
+        "gw_data": False
+    },
+    0xF0: {
+        "type": "prs",
+        "id_len": 1,
+        "data_len": 4,
+        "parse method": _parse_data_packet_0xF0,
         "gw_data": False
     },
 }
@@ -596,6 +617,7 @@ def extraction_information_from_frame(frame_list:list, inf_fifo,report_datatype:
             data_len = data_packet_properties[data_frame_list[0]]["data_len"] * rel_node_num
             data_frame_list = data_frame_list[id_len + data_len:]
         else:
-            raise HipnucFrame_ErrorFrame_Exception
+            # raise HipnucFrame_ErrorFrame_Exception
+            data_frame_list = data_frame_list[1:]
 
     inf_fifo.put(data_dic)
