@@ -7,6 +7,10 @@ Readme ([繁體中文](https://github.com/hipnuc/products/blob/master/README_tc.
 Readme ([English](https://github.com/hipnuc/products/blob/master/README_en.md))
 
 
+
+本仓库包含了所有HI2XX的产品资料，包含文档，例程及配套软件和驱动程序。
+
+
 | 文件夹           | 说明               |
 | ---------------- | ------------------ |
 | doc              | 产品用户手册       |
