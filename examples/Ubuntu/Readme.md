@@ -30,7 +30,7 @@ ls
 
 ​			这个命令是查看当前目录下都有哪些文件，然后按下 Enter 键，就会出现一堆文件名称，在这些文件名称中，我们主要关心ttyUSB这个文件，这个文件名称后边还会跟着一个数字，这个数字就是USB设备号，由于ubuntu USB设备号为从零开始依次累加，所以多个设备每次开机后设备号是不固定的，我们需要确定设备的设备号。下面我用两张图片来描述
 
-![](C:\Users\16372\Desktop\gitresp\products\examples\Ubuntu\image\1.png)
+![](.\img\1.png)
 
 这是没有插入USB设备的情况，我们发现，这个时候，dev目录下并没有名为__ttyUSB__文件，接下来我们插入USB线，连接调试板，然后我们再次执行：
 
@@ -40,7 +40,7 @@ ls
 
 ​	这个时候，我们发现dev目录下多了几个文件名称，先上图：
 
-![](C:\Users\16372\Desktop\gitresp\products\examples\Ubuntu\image\2.jpg)
+![](.\img\2.jpg)
 
 其他的文件名我们先不用管，只关心用红线画起来的“__ttyUSB0__”，这个文件就是我们的调试版在ubuntu系统中生成的设备文件，我们对它进行读写，就可以完成串口通信。这个文件名称我们把它记下来，后边我们会用到，很重要。当然有的时候，可能是ttyUSB1，或者是ttyUSB2，甚至是更大的数，都有可能。
 
@@ -58,7 +58,7 @@ mkdir hipnuc
 cd hipnuc
 ```
 
-表示进入__hipnuc__的目录,然后把本文档所在目录下的 __*.c__ 和 __*.h__ 文件,复制到__hipnuc__目录中。
+表示进入__hipnuc__的目录,然后把本文档所在目录下的 __*.c__  、__*.h__   和  __Makefile__ 文件,复制到__hipnuc__目录中。
 
 然后执行：
 
@@ -66,12 +66,12 @@ cd hipnuc
 ls
 ```
 
-查看复制文件操作是否成功。如果成功，就会出现五个文件。
+查看复制文件操作是否成功。如果成功，就会出现六个文件。
 
 然后执行：
 
 ```shell
-gcc imu_data_decode.c pakcet.c main.c -o main -lpthread
+make
 ```
 
 执行成功后，没有任何提示，然后执行：
@@ -88,12 +88,12 @@ sudo ./main ttyUSB0
 
  执行成功后，会出现这个画面：
 
-![](C:\Users\16372\Desktop\gitresp\products\examples\Ubuntu\image\3.png)
+![](.\img\3.png)
 
 这个画面上的数字会随着模块位置的改变而发生变化。
 
 如果失败，会出现这个错误：
 
-![](C:\Users\16372\Desktop\gitresp\products\examples\Ubuntu\image\4 (2).png)
+![](.\img\4 (2).png)
 
 这个时候我们需要重新确认设备的端口号，检查在输入执行命令的时候，端口号是否输入正确。
