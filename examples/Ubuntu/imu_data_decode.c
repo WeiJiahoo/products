@@ -6,9 +6,9 @@
 
 static Packet_t RxPkt; /* used for data receive */
 static int16_t acc[3];
-static int16_t gyo[3];
+static int16_t gyr[3];
 static int16_t mag[3];
-static float eular[3];
+static float eul[3];
 static float quat[4];
 static uint8_t id;
 
@@ -19,10 +19,10 @@ int get_raw_acc(int16_t* a)
     return strlen((char *)acc);
 }
 
-int get_raw_gyo(int16_t* g)
+int get_raw_gyr(int16_t* g)
 {
-    memcpy(g, gyo, sizeof(gyo));
-    return strlen((char *)gyo);
+    memcpy(g, gyr, sizeof(gyr));
+    return strlen((char *)gyr);
 }
 
 int get_raw_mag(int16_t* m)
@@ -31,10 +31,10 @@ int get_raw_mag(int16_t* m)
     return strlen((char *)mag);
 }
 
-int get_eular(float* e)
+int get_eul(float* e)
 {
-    memcpy(e, eular, sizeof(eular));
-    return strlen((char *)eular);
+    memcpy(e, eul, sizeof(eul));
+    return strlen((char *)eul);
 }
 
 int get_quat(float* q)
@@ -76,10 +76,10 @@ static void OnDataReceived(Packet_t *pkt)
                 memcpy(acc, p + offset + 1, sizeof(acc));
                 offset += 7;
                 break;
-            case kItemGyoRaw:
-            case kItemGyoCalibrated:
-            case kItemGyoFiltered:
-                memcpy(gyo, p + offset + 1, sizeof(gyo));
+            case kItemgyrRaw:
+            case kItemgyrCalibrated:
+            case kItemgyrFiltered:
+                memcpy(gyr, p + offset + 1, sizeof(gyr));
                 offset += 7;
                 break;
             case kItemMagRaw:
@@ -88,14 +88,14 @@ static void OnDataReceived(Packet_t *pkt)
                 memcpy(mag, p + offset + 1, sizeof(mag));
                 offset += 7;
                 break;
-            case kItemRotationEular:
-                eular[0] = ((float)(int16_t)(p[offset+1] + (p[offset+2]<<8)))/100;
-                eular[1] = ((float)(int16_t)(p[offset+3] + (p[offset+4]<<8)))/100;
-                eular[2] = ((float)(int16_t)(p[offset+5] + (p[offset+6]<<8)))/10;
+            case kItemRotationeul:
+                eul[0] = ((float)(int16_t)(p[offset+1] + (p[offset+2]<<8)))/100;
+                eul[1] = ((float)(int16_t)(p[offset+3] + (p[offset+4]<<8)))/100;
+                eul[2] = ((float)(int16_t)(p[offset+5] + (p[offset+6]<<8)))/10;
                 offset += 7;
                 break;
-            case kItemRotationEular2:
-                memcpy(eular, p + offset + 1, sizeof(eular));
+            case kItemRotationeul2:
+                memcpy(eul, p + offset + 1, sizeof(eul));
                 offset += 13;
                 break;
             case kItemRotationQuat:
@@ -114,61 +114,6 @@ static void OnDataReceived(Packet_t *pkt)
                 break;
         }
     }
-}
-
-/* imu data decode init
-
-Example for usage:
-1. add packet.c, imu_data_decode.c into your project, and add their include path 
-2. main function:
-
-
-uint8_t ID;
-int16_t Acc[3];
-int16_t Gyo[3];
-int16_t Mag[3];
-float Eular[3];
-float Quat[4];
-int32_t Pressure;
-
-main()
-{
-    // init UART .etc...
-
-    // imu_data_decode init 
-    imu_data_decode_init();
-
-    while(1)
-    {
-        get_raw_acc(Acc);
-        get_raw_gyo(Gyo);
-        get_raw_mag(Mag);
-        get_eular(Eular);
-        get_quat(Quat);
-        get_id(&ID);
-        
-        //printf("id:%d\r\n", ID);
-        
-        printf("Acc: %d %d %d\r\n", Acc[0], Acc[1], Acc[2]);
-        printf("Gyo: %d %d %d\r\n", Gyo[0], Gyo[1], Gyo[2]);
-        printf("Mag: %d %d %d\r\n", Mag[0], Mag[1], Mag[2]);
-        printf("Eular(P R Y):    %0.2f %0.2f %0.2f\r\n", Eular[0], Eular[1], Eular[2]);
-        printf("Quat(W X Y Z):   %0.3f %0.3f %0.3f %0.3f\r\n", Quat[0], Quat[1], Quat[2], Quat[3]);
-        
-        //delay a while 
-        delay();
-    }
-}
-
-//your UART interrupt function when received a char
-void UART_ISR(void)
-{
-    uint8_t ch;
-
-    // get a UART char 
-    ch = uart_read();
-
-    Packet_Decode(ch);
 }
 
 */

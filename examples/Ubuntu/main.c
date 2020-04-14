@@ -96,12 +96,12 @@ int main(int argc,const char *argv[])
     
    
 	uint8_t ID = 0;
-	int16_t Acc[3] = {0};
-	int16_t Gyo[3] = {0};
-	int16_t Mag[3] = {0};
-	float Eular[3] = {0};
-	float Quat[4]  = {0};
-	int32_t Pressure = 0;
+	int16_t acc[3] = {0};
+	int16_t gyr[3] = {0};
+	int16_t mag[3] = {0};
+	float eul[3] = {0};
+	float quat[4]  = {0};
+	int32_t prs = 0;
 	ssize_t n = 0;
 	int i;
 	uint8_t buf[1024];
@@ -118,28 +118,28 @@ int main(int argc,const char *argv[])
 			
 			printf("    device id:  %-8d\n",ID);
 			printf("   frame rate: %4dHz\n", rev_num);
-			if(get_raw_acc(Acc))
-				printf("	  Acc:	%-8d %-8d %-8d\r\n",Acc[0], Acc[1], Acc[2]);
+			if(get_raw_acc(acc))
+				printf("	  acc:	%-8d %-8d %-8d\r\n",acc[0], acc[1], acc[2]);
 			else
-				printf("	  Acc:\n");
+				printf("	  acc:\n");
 
-			if(get_raw_gyo(Gyo))
-				printf("	  Gyo:	%-8d %-8d %-8d\r\n",Gyo[0], Gyo[1], Gyo[2]);
+			if(get_raw_gyr(gyr))
+				printf("	  gyr:	%-8d %-8d %-8d\r\n",gyr[0], gyr[1], gyr[2]);
 			else
-				printf("	  Gyo:\n");
+				printf("	  gyr:\n");
 
-			if(get_raw_mag(Mag))
-				printf("	  Mag:	%-8d %-8d %-8d\r\n",Mag[0], Mag[1], Mag[2]);
+			if(get_raw_mag(mag))
+				printf("	  mag:	%-8d %-8d %-8d\r\n",mag[0], mag[1], mag[2]);
 			else
 				printf("	  Msg:\n");
 
-			if(get_eular(Eular))
-				printf(" Eular(P R Y):  %-8.2f %-8.2f %-8.2f\r\n",Eular[0], Eular[1], Eular[2]);
+			if(get_eular(eul))
+				printf(" eul(P R Y):  %-8.2f %-8.2f %-8.2f\r\n",eul[0], eul[1], eul[2]);
 			else
-				printf(" Eular(P R Y):  \n");
+				printf(" eul(P R Y):  \n");
 
-			if(get_quat(Quat))
-				printf("quat(W X Y Z):  %-8.3f %-8.3f %-8.3f %-8.3f\r\n",Quat[0], Quat[1], Quat[2], Quat[3]);
+			if(get_quat(quat))
+				printf("quat(W X Y Z):  %-8.3f %-8.3f %-8.3f %-8.3f\r\n",quat[0], quat[1], quat[2], quat[3]);
 			
 			printf("Please enter ctrl + 'c' to quit...\n");
 		}
