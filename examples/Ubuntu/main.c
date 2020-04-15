@@ -21,7 +21,7 @@ int rev_num;
 
 int open_port(char *port_device)
 {
-    struct termios options;
+   struct termios options;
 
 	int fd = open(port_device, O_RDWR | O_NOCTTY);
 	
@@ -70,7 +70,7 @@ int open_port(char *port_device)
 void *pthread_frame_rate(void *arg)
 {
 	while(run_flag)
-		rev_num = printf_num();
+		rev_num = ret_frame_count();
 
 	pthread_exit(NULL);
 }
@@ -89,7 +89,10 @@ int main(int argc,const char *argv[])
 	  	fd = open_port(dir_usb_dev);
 	}
 	else
-		fd = open_port("/dev/user_uart");
+	{
+		puts("Please enter USB port append to the execution command!!!");
+		return 0;
+	}
 
 	
 	imu_data_decode_init();
@@ -111,36 +114,26 @@ int main(int argc,const char *argv[])
 		if(n > 0)
 		{
 			for(i=0; i<n; i++)
-				Packet_Decode(buf[	i]);;
+				Packet_Decode(buf[i]);;
 
 			get_id(&ID);
+			get_raw_acc(acc);
+			get_raw_gyr(gyr);
+			get_raw_mag(mag);
+			get_eul(eul);
+		
 			printf("\033c");
-			
+
 			printf("    device id:  %-8d\n",ID);
 			printf("   frame rate: %4dHz\n", rev_num);
-			if(get_raw_acc(acc))
-				printf("	  acc:	%-8d %-8d %-8d\r\n",acc[0], acc[1], acc[2]);
-			else
-				printf("	  acc:\n");
-
-			if(get_raw_gyr(gyr))
-				printf("	  gyr:	%-8d %-8d %-8d\r\n",gyr[0], gyr[1], gyr[2]);
-			else
-				printf("	  gyr:\n");
-
-			if(get_raw_mag(mag))
-				printf("	  mag:	%-8d %-8d %-8d\r\n",mag[0], mag[1], mag[2]);
-			else
-				printf("	  Msg:\n");
-
-			if(get_eular(eul))
-				printf(" eul(P R Y):  %-8.2f %-8.2f %-8.2f\r\n",eul[0], eul[1], eul[2]);
-			else
-				printf(" eul(P R Y):  \n");
+			printf("	  acc:	%-8d %-8d %-8d\r\n",acc[0], acc[1], acc[2]);
+			printf("	  gyr:	%-8d %-8d %-8d\r\n",gyr[0], gyr[1], gyr[2]);
+			printf("	  mag:	%-8d %-8d %-8d\r\n",mag[0], mag[1], mag[2]);
+			printf(" eul(P R Y):  %-8.2f %-8.2f %-8.2f\r\n",eul[0], eul[1], eul[2]);
 
 			if(get_quat(quat))
 				printf("quat(W X Y Z):  %-8.3f %-8.3f %-8.3f %-8.3f\r\n",quat[0], quat[1], quat[2], quat[3]);
-			
+
 			printf("Please enter ctrl + 'c' to quit...\n");
 		}
 	}

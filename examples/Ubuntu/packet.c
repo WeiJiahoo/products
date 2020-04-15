@@ -18,7 +18,24 @@
 #ifndef CH_ERR
 #define CH_ERR  (1)
 #endif
+int frame_count;
 
+int ret_frame_count(void)
+{
+	frame_count = 0;
+	int i = time_out(1);
+
+	return frame_count;
+}
+
+int time_out(int second)
+{
+	struct timeval time_value;
+	time_value.tv_sec = second;
+	time_value.tv_usec = 0;
+
+	return select(0,NULL,NULL,NULL,&time_value);
+}
 
 
 static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t lengthInBytes)
@@ -171,25 +188,8 @@ void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent Func)
  * @param  c ´®¿ÚÊý¾Ý
  * @retval CH_OK
  */
-int m;
-int printf_num(void)
-{
-	m = 0;
-	int i = time_out(1);
 
-	return m;
-}
 
-int time_out(int second)
-{
-	struct timeval time_value;
-	time_value.tv_sec = second;
-	time_value.tv_usec = 0;
-
-	return select(0,NULL,NULL,NULL,&time_value);
-}
-//timer
-//num++ 
 uint32_t Packet_Decode(uint8_t c)
 {
     static uint16_t CRCReceived = 0;            /* CRC value received from a frame */
@@ -202,7 +202,7 @@ uint32_t Packet_Decode(uint8_t c)
         case kStatus_Idle:
             if(c == 0x5A)
                 status = kStatus_Cmd;
-			m++;
+			frame_count++;
             break;
         case kStatus_Cmd:
             RxPkt->type = c;
