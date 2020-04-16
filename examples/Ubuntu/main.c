@@ -5,6 +5,9 @@
 #include <errno.h> /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <pthread.h>
 
 #include "packet.h"
@@ -18,6 +21,23 @@
 
 bool run_flag = true;
 int rev_num;
+
+int time_out(int second)
+{
+	struct timeval time_value;
+	time_value.tv_sec = second;
+	time_value.tv_usec = 0;
+
+	return select(0,NULL,NULL,NULL,&time_value);
+}
+
+int ret_frame_count(void)
+{
+	frame_count = 0;
+	int i = time_out(1);
+
+	return frame_count;
+}
 
 int open_port(char *port_device)
 {

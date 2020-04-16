@@ -1,8 +1,5 @@
 #include <string.h>
 #include <stdio.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "packet.h"
 
@@ -19,24 +16,6 @@
 #define CH_ERR  (1)
 #endif
 int frame_count;
-
-int ret_frame_count(void)
-{
-	frame_count = 0;
-	int i = time_out(1);
-
-	return frame_count;
-}
-
-int time_out(int second)
-{
-	struct timeval time_value;
-	time_value.tv_sec = second;
-	time_value.tv_usec = 0;
-
-	return select(0,NULL,NULL,NULL,&time_value);
-}
-
 
 static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t lengthInBytes)
 {

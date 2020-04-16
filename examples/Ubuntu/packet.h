@@ -6,8 +6,7 @@
 
 #define MAX_PACKET_LEN          (128)
 
-
-
+extern int frame_count;
 
 typedef struct
 {
@@ -32,8 +31,7 @@ uint32_t Packet_CreatePingAck(Packet_t *pkt, uint8_t major, uint8_t minor, uint8
 typedef void (*OnDataReceivedEvent)(Packet_t *pkt);
 void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent rx_handler);
 uint32_t Packet_Decode(uint8_t c);
-int ret_frame_count(void);
-int time_out(int second);
+
 
 #endif
 
