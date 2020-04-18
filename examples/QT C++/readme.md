@@ -21,7 +21,24 @@
    ```
    
 4.  "imu_data_decode_init()" -> 初始化一次 RFreceiver 和 node
-5.  "kptl_decode(c)" -> 接收到來自序列的單個 uint8_t 字元並解析
+5.  "kptl_decode(c)" -> 接收到來自序列的單個 uint8_t 字元並解析，在 loop 中持續接收並解析:
+
+    ```C++
+    void MainWindow::read_serial()
+    {
+        int NumberOfBytesToRead = m_reader.bytesAvailable();
+
+        if(NumberOfBytesToRead > 0 && m_reader.isReadable())
+        {
+            QByteArray arr = m_reader.readAll();
+
+            for (int i=0;i<NumberOfBytesToRead;i++) {
+                uint8_t c=arr[i];
+                kptl_decode(c);
+            }
+        }
+    }
+    ```
 6. 宣告 "imu_data_t imu"，呼叫 "dump_rf_data(&imu)"(無線接收器)或 "dump_imu_data(&imu)"(USB節點)；將數據存入"imu"。
     想獲得 pitch/roll/yaw 的話依序為 imu.eul[0]，imu.eul[1]，imu.eul[2]。
     imu_data_t 結構型態參考以下:
