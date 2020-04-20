@@ -19,7 +19,6 @@
  * @return The file descriptor on success or -1 on error.
  */
 
-bool run_flag = true;
 int rev_num;
 
 int time_out(int second)
@@ -71,11 +70,12 @@ int open_port(char *port_device)
 	else 
 	{
 		printf("isatty success!\n");
+		printf("1");
+	
 	}
 
 
 	bzero(&options,sizeof(options));
-
 	options.c_cflag = B115200 | CS8 | CLOCAL |CREAD;
 	options.c_iflag = IGNPAR;
 	options.c_oflag = 0;
@@ -89,7 +89,7 @@ int open_port(char *port_device)
 
 void *pthread_frame_rate(void *arg)
 {
-	while(run_flag)
+	while(1)
 		rev_num = ret_frame_count();
 
 	pthread_exit(NULL);
@@ -119,23 +119,28 @@ int main(int argc,const char *argv[])
     
    
 	uint8_t ID = 0;
-	int16_t acc[3] = {0};
-	int16_t gyr[3] = {0};
-	int16_t mag[3] = {0};
+	float acc[3] = {0};
+	float gyr[3] = {0};
+	float mag[3] = {0};
 	float eul[3] = {0};
 	float quat[4]  = {0};
-	int32_t prs = 0;
+
 	ssize_t n = 0;
 	int i;
-	uint8_t buf[1024];
-	while(run_flag)
+	uint8_t buf[2048];
+	while(1)
 	{
 		n = read(fd, buf, sizeof(buf));
+
+		
 		if(n > 0)
 		{
-			for(i=0; i<n; i++)
-				Packet_Decode(buf[i]);;
 
+			for(i=0; i<n; i++)
+			{
+				Packet_Decode(buf[i]);
+			}
+			
 			get_id(&ID);
 			get_raw_acc(acc);
 			get_raw_gyr(gyr);
@@ -144,19 +149,20 @@ int main(int argc,const char *argv[])
 		
 			printf("\033c");
 
-			printf("    device id:  %-8d\n",ID);
-			printf("   frame rate: %4dHz\n", rev_num);
-			printf("	  acc:	%-8d %-8d %-8d\r\n",acc[0], acc[1], acc[2]);
-			printf("	  gyr:	%-8d %-8d %-8d\r\n",gyr[0], gyr[1], gyr[2]);
-			printf("	  mag:	%-8d %-8d %-8d\r\n",mag[0], mag[1], mag[2]);
-			printf(" eul(P R Y):  %-8.2f %-8.2f %-8.2f\r\n",eul[0], eul[1], eul[2]);
-
+			printf("    Device ID:  %-8d\n",ID);
+			printf("   Frame Rate: %4dHz\n", rev_num);
+			printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",acc[0], acc[1], acc[2]);
+			printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",gyr[0], gyr[1], gyr[2]);
+			printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",mag[0], mag[1], mag[2]);
+			printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",eul[0], eul[1], eul[2]);
+		
 			if(get_quat(quat))
-				printf("quat(W X Y Z):  %-8.3f %-8.3f %-8.3f %-8.3f\r\n",quat[0], quat[1], quat[2], quat[3]);
+				printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",quat[0], quat[1], quat[2], quat[3]);
 
 			printf("Please enter ctrl + 'c' to quit...\n");
+
 		}
-	}
+	}	
 	sleep(1);
 	pthread_join(ph_rate,NULL);
 

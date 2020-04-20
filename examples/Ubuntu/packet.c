@@ -15,7 +15,7 @@
 #ifndef CH_ERR
 #define CH_ERR  (1)
 #endif
-int frame_count;
+
 
 static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t lengthInBytes)
 {
@@ -38,6 +38,8 @@ static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t leng
     } 
     *currectCrc = crc;
 }
+
+#if 0
 
 uint32_t Packet_CreatePing(Packet_t *pkt)
 {
@@ -119,7 +121,7 @@ uint32_t Packet_Final(Packet_t *pkt)
 }
 
 
-
+#endif
 
 enum status
 {
@@ -181,27 +183,15 @@ uint32_t Packet_Decode(uint8_t c)
         case kStatus_Idle:
             if(c == 0x5A)
                 status = kStatus_Cmd;
-			frame_count++;
-            break;
+			break;
         case kStatus_Cmd:
             RxPkt->type = c;
-            switch(RxPkt->type)
-            {
-                case 0xA5:  /* Data */
-                    status = kStatus_LenLow;
-                    break;
-                case 0xA6:  /* Ping */
-                    if(EventHandler != NULL)
-                    {
-                        EventHandler(RxPkt);
-                    }
-                    status = kStatus_Idle;
-                    break;
-                case 0xA7:  /* Ping Respond */
-                    RxPkt->ofs = 0;
-                    status = kStatus_Data;
-                    break;
-            }
+			switch(RxPkt->type)
+			{
+				case 0xA5:  /* Data */
+					status = kStatus_LenLow;
+					break;
+			}
             break;
         case kStatus_LenLow:
             RxPkt->payload_len = c;
@@ -224,7 +214,9 @@ uint32_t Packet_Decode(uint8_t c)
             status = kStatus_Data;
             break;
         case kStatus_Data:
+	
             RxPkt->buf[RxPkt->ofs++] = c;
+		
             if(RxPkt->type == 0xA7 && RxPkt->ofs >= 8)
             {
                 RxPkt->payload_len = 8;

@@ -5,27 +5,32 @@
 #include "imu_data_decode.h"
 
 static Packet_t RxPkt; /* used for data receive */
-static int16_t acc[3];
-static int16_t gyr[3];
-static int16_t mag[3];
+#if 0
+
+#else
+static float acc[3];
+static float gyr[3];
+static float mag[3];
+#endif
+
 static float eul[3];
 static float quat[4];
 static uint8_t id;
 
     
-int get_raw_acc(int16_t* a)
+int get_raw_acc(float* a)
 {
     memcpy(a, acc, sizeof(acc));
     return 0;
 }
 
-int get_raw_gyr(int16_t* g)
+int get_raw_gyr(float* g)
 {
     memcpy(g, gyr, sizeof(gyr));
     return 0;
 }
 
-int get_raw_mag(int16_t* m)
+int get_raw_mag(float* m)
 {
     memcpy(m, mag, sizeof(mag));
     return 0;
@@ -49,11 +54,14 @@ int get_id(uint8_t *user_id)
 	
     return 0;
 }
+int frame_count;
 
 /*  callback function of  when recv a data frame successfully */
 static void OnDataReceived(Packet_t *pkt)
 {
+	int temp[3] = {0};
 
+	frame_count++;
 	if(pkt->type != 0xA5)
     {
         return;
@@ -70,26 +78,42 @@ static void OnDataReceived(Packet_t *pkt)
 			offset += 2;
 			break;
 		case kItemAccRaw:
-			memcpy(acc, p + offset + 1, sizeof(acc));
+			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
+			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
+			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+
+			acc[0] = (float)temp[0] / 1000;
+			acc[1] = (float)temp[1] / 1000;
+			acc[2] = (float)temp[2] / 1000;
 			offset += 7;
 			break;
 		case kItemGyrRaw:
-			memcpy(gyr, p + offset + 1, sizeof(gyr));
+			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
+			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
+			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			gyr[0] = (float)temp[0] / 10;
+			gyr[1] = (float)temp[1] / 10;
+			gyr[2] = (float)temp[2] / 10;
 			offset += 7;
 			break;
 		case kItemMagRaw:
-			memcpy(mag, p + offset + 1, sizeof(mag));
+			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
+			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
+			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			mag[0] = (float)temp[0] / 10;
+			mag[1] = (float)temp[1] / 10;
+			mag[2] = (float)temp[2] / 10;
+
 			offset += 7;
 			break;
 		case kItemRotationEul:
-			eul[0] = ((float)(int16_t)(p[offset+1] + (p[offset+2]<<8)))/100;
-			eul[1] = ((float)(int16_t)(p[offset+3] + (p[offset+4]<<8)))/100;
-			eul[2] = ((float)(int16_t)(p[offset+5] + (p[offset+6]<<8)))/10;
+			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
+			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
+			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			eul[1] = (float)temp[0] / 100;
+			eul[0] = (float)temp[1] / 100;
+			eul[2] = (float)temp[2] / 10;
 			offset += 7;
-			break;
-		case kItemRotationEul2:
-			memcpy(eul, p + offset + 1, sizeof(eul));
-			offset += 13;
 			break;
 		case kItemRotationQuat:
 			memcpy(quat, p + offset + 1, sizeof(quat));
@@ -97,6 +121,20 @@ static void OnDataReceived(Packet_t *pkt)
 			break;
 		case kItemPressure:
 			offset += 5;
+			break;
+		case KItemIMU_SOL:
+			id =p[offset + 1];
+	
+			memcpy(acc,p + 12,sizeof(acc));
+			memcpy(gyr,p + 24,sizeof(gyr));
+			memcpy(mag,p + 36,sizeof(mag));
+			memcpy(eul,p + 48,sizeof(eul));
+			memcpy(quat, p + 60, sizeof(quat));
+			
+			offset += 76;
+			break;
+		case KItemGW_SOL:
+			
 			break;
 		default:
 			printf("data decode wrong\r\n");
