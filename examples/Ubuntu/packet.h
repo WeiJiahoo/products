@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_PACKET_LEN          (128)
+#define MAX_PACKET_LEN          (2048)
 
 extern int frame_count;
 
@@ -16,15 +16,6 @@ typedef struct
     uint16_t len;                   /* total frame len */
     uint8_t type;
 }Packet_t;
-
-
-/* packet Tx API */
-uint32_t Packet_AddData(Packet_t *pkt, uint8_t *buf, uint16_t len);
-uint32_t Packet_Begin(Packet_t *pkt);
-uint32_t Packet_Final(Packet_t *pkt);
-uint32_t Packet_CreatePing(Packet_t *pkt);
-uint32_t Packet_CreatePingAck(Packet_t *pkt, uint8_t major, uint8_t minor, uint8_t bugfix, uint16_t option);
-
 
 
 /* packet Rx API */
