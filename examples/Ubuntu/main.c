@@ -146,17 +146,21 @@ int main(int argc,const char *argv[])
 			get_raw_gyr(gyr);
 			get_raw_mag(mag);
 			get_eul(eul);
+			get_quat(quat);
 		
 			printf("\033c");
 
 			printf("    Device ID:  %-8d\n",ID);
 			printf("   Frame Rate: %4dHz\n", rev_num);
-			printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",acc[0], acc[1], acc[2]);
-			printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",gyr[0], gyr[1], gyr[2]);
-			printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",mag[0], mag[1], mag[2]);
-			printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",eul[0], eul[1], eul[2]);
-		
-			if(get_quat(quat))
+			if(acc_tag_flag)
+				printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",acc[0], acc[1], acc[2]);
+			if(gyr_tag_flag)
+				printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",gyr[0], gyr[1], gyr[2]);
+			if(mag_tag_flag)
+				printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",mag[0], mag[1], mag[2]);
+			if(eul_tag_flag)
+				printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",eul[0], eul[1], eul[2]);
+			if(quat_tag_flag)
 				printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",quat[0], quat[1], quat[2], quat[3]);
 
 			printf("Please enter ctrl + 'c' to quit...\n");

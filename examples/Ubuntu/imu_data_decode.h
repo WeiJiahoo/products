@@ -4,7 +4,14 @@
 #include <stdint.h>
 #include <stdbool.h>
 extern int frame_count;
-extern bool data_tag_flag;
+
+extern bool acc_tag_flag;
+extern bool gyr_tag_flag;
+extern bool mag_tag_flag;
+extern bool eul_tag_flag;
+extern bool quat_tag_flag;
+
+
 typedef enum 
 {
     kItemID =                   0x90,   /* user programed ID   */
@@ -20,6 +27,7 @@ typedef enum
 }ItemID_t;
 
 int imu_data_decode_init(void);
+int copy_data_to_array(int *dest,uint8_t *src,int offset);
 int get_raw_acc(float* a);
 int get_raw_gyr(float* g);
 int get_raw_mag(float* m);

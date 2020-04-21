@@ -4,14 +4,20 @@
 #include "packet.h"
 #include "imu_data_decode.h"
 
-static Packet_t RxPkt; /* used for data receive */
-#if 0
+bool acc_tag_flag = false;
+bool gyr_tag_flag = false;
+bool mag_tag_flag = false;
+bool eul_tag_flag = false;
+bool quat_tag_flag = false;
+bool imu_tag_flag = false;
+bool gw_tag_flag = false;
 
-#else
+
+static Packet_t RxPkt; /* used for data receive */
+
 static float acc[3];
 static float gyr[3];
 static float mag[3];
-#endif
 
 static float eul[3];
 static float quat[4];
@@ -45,7 +51,7 @@ int get_eul(float* e)
 int get_quat(float* q)
 {
     memcpy(q, quat, sizeof(quat));
-    return strlen((char *)quat);
+    return 0;
 }
 
 int get_id(uint8_t *user_id)
@@ -73,49 +79,50 @@ static void OnDataReceived(Packet_t *pkt)
 	{
 		switch(p[offset])
 		{
+			acc_tag_flag = false;
+			gyr_tag_flag = false;
+			mag_tag_flag = false;
+			eul_tag_flag = false;
+			quat_tag_flag = false;
+
 		case kItemID:
 			id = p[1];
 			offset += 2;
 			break;
 		case kItemAccRaw:
-			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
-			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
-			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
-
+			acc_tag_flag = true;
+			copy_data_to_array(temp,p,offset);
 			acc[0] = (float)temp[0] / 1000;
 			acc[1] = (float)temp[1] / 1000;
 			acc[2] = (float)temp[2] / 1000;
 			offset += 7;
 			break;
 		case kItemGyrRaw:
-			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
-			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
-			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			gyr_tag_flag = true;
+			copy_data_to_array(temp,p,offset);
 			gyr[0] = (float)temp[0] / 10;
 			gyr[1] = (float)temp[1] / 10;
 			gyr[2] = (float)temp[2] / 10;
 			offset += 7;
 			break;
 		case kItemMagRaw:
-			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
-			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
-			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			mag_tag_flag = true;
+			copy_data_to_array(temp,p,offset);
 			mag[0] = (float)temp[0] / 10;
 			mag[1] = (float)temp[1] / 10;
 			mag[2] = (float)temp[2] / 10;
-
 			offset += 7;
 			break;
 		case kItemRotationEul:
-			temp[0] = (int16_t)(p[offset + 1] | p[offset + 2] << 8);
-			temp[1] = (int16_t)(p[offset + 3] | p[offset + 4] << 8);
-			temp[2] = (int16_t)(p[offset + 5] | p[offset + 6] << 8);
+			eul_tag_flag = true;
+			copy_data_to_array(temp,p,offset);
 			eul[1] = (float)temp[0] / 100;
 			eul[0] = (float)temp[1] / 100;
 			eul[2] = (float)temp[2] / 10;
 			offset += 7;
 			break;
 		case kItemRotationQuat:
+			quat_tag_flag = true;
 			memcpy(quat, p + offset + 1, sizeof(quat));
 			offset += 17;
 			break;
@@ -123,6 +130,12 @@ static void OnDataReceived(Packet_t *pkt)
 			offset += 5;
 			break;
 		case KItemIMU_SOL:
+			acc_tag_flag = true;
+			gyr_tag_flag = true;
+			mag_tag_flag = true;
+			eul_tag_flag = true;
+			quat_tag_flag = true;
+
 			id =p[offset + 1];
 	
 			memcpy(acc,p + 12,sizeof(acc));
@@ -130,11 +143,10 @@ static void OnDataReceived(Packet_t *pkt)
 			memcpy(mag,p + 36,sizeof(mag));
 			memcpy(eul,p + 48,sizeof(eul));
 			memcpy(quat, p + 60, sizeof(quat));
-			
 			offset += 76;
 			break;
 		case KItemGW_SOL:
-			
+			gw_tag_flag = true;
 			break;
 		default:
 			printf("data decode wrong\r\n");
@@ -151,3 +163,11 @@ int imu_data_decode_init(void)
     return 0;
 }
 
+
+int copy_data_to_array(int *dest,uint8_t *src,int offset)
+{
+	dest[0] = (int16_t)(src[offset + 1] | src[offset + 2] << 8);
+	dest[1] = (int16_t)(src[offset + 3] | src[offset + 4] << 8);
+	dest[2] = (int16_t)(src[offset + 5] | src[offset + 6] << 8);	
+	return 0;
+}
