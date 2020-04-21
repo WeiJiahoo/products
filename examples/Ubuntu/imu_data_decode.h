@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-extern int frame_count;
 
 extern bool acc_tag_flag;
 extern bool gyr_tag_flag;
@@ -22,13 +21,14 @@ typedef enum
     kItemRotationQuat =         0xD1,   /* att q               */
     kItemPressure =             0xF0,   /* pressure            */
     kItemEnd =                  0x00,   
-	KItemIMU_SOL =              0x91,   /*   */
-	KItemGW_SOL =               0x62,   /*   */
+	KItemIMUSOL =              0x91,   /* IMUSOL  */
+	KItemGWSOL =               0x62,   /* RFSOL  */
 }ItemID_t;
 
 int imu_data_decode_init(void);
 int copy_data_to_array(int *dest,uint8_t *src,int offset);
 int get_raw_acc(float* a);
+int get_frame_count(void);
 int get_raw_gyr(float* g);
 int get_raw_mag(float* m);
 int get_id(uint8_t *user_id);

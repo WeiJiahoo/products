@@ -22,8 +22,14 @@ static float mag[3];
 static float eul[3];
 static float quat[4];
 static uint8_t id;
-
+static int frame_count;
     
+	
+int get_frame_count(void)
+{
+	return frame_count;
+}
+
 int get_raw_acc(float* a)
 {
     memcpy(a, acc, sizeof(acc));
@@ -60,7 +66,7 @@ int get_id(uint8_t *user_id)
 	
     return 0;
 }
-int frame_count;
+
 
 /*  callback function of  when recv a data frame successfully */
 static void OnDataReceived(Packet_t *pkt)
@@ -91,7 +97,7 @@ static void OnDataReceived(Packet_t *pkt)
 			break;
 		case kItemAccRaw:
 			acc_tag_flag = true;
-			copy_data_to_array(temp,p,offset);
+			stream2int16(temp, p, offset);
 			acc[0] = (float)temp[0] / 1000;
 			acc[1] = (float)temp[1] / 1000;
 			acc[2] = (float)temp[2] / 1000;
@@ -99,7 +105,7 @@ static void OnDataReceived(Packet_t *pkt)
 			break;
 		case kItemGyrRaw:
 			gyr_tag_flag = true;
-			copy_data_to_array(temp,p,offset);
+			stream2int16(temp, p, offset);
 			gyr[0] = (float)temp[0] / 10;
 			gyr[1] = (float)temp[1] / 10;
 			gyr[2] = (float)temp[2] / 10;
@@ -107,7 +113,7 @@ static void OnDataReceived(Packet_t *pkt)
 			break;
 		case kItemMagRaw:
 			mag_tag_flag = true;
-			copy_data_to_array(temp,p,offset);
+			stream2int16(temp, p, offset);
 			mag[0] = (float)temp[0] / 10;
 			mag[1] = (float)temp[1] / 10;
 			mag[2] = (float)temp[2] / 10;
@@ -115,7 +121,7 @@ static void OnDataReceived(Packet_t *pkt)
 			break;
 		case kItemRotationEul:
 			eul_tag_flag = true;
-			copy_data_to_array(temp,p,offset);
+			stream2int16(temp, p, offset);
 			eul[1] = (float)temp[0] / 100;
 			eul[0] = (float)temp[1] / 100;
 			eul[2] = (float)temp[2] / 10;
@@ -129,7 +135,7 @@ static void OnDataReceived(Packet_t *pkt)
 		case kItemPressure:
 			offset += 5;
 			break;
-		case KItemIMU_SOL:
+		case KItemIMUSOL:
 			acc_tag_flag = true;
 			gyr_tag_flag = true;
 			mag_tag_flag = true;
@@ -145,7 +151,7 @@ static void OnDataReceived(Packet_t *pkt)
 			memcpy(quat, p + 60, sizeof(quat));
 			offset += 76;
 			break;
-		case KItemGW_SOL:
+		case KItemGWSOL:
 			gw_tag_flag = true;
 			break;
 		default:
@@ -164,7 +170,7 @@ int imu_data_decode_init(void)
 }
 
 
-int copy_data_to_array(int *dest,uint8_t *src,int offset)
+int stream2int16(int *dest,uint8_t *src,int offset)
 {
 	dest[0] = (int16_t)(src[offset + 1] | src[offset + 2] << 8);
 	dest[1] = (int16_t)(src[offset + 3] | src[offset + 4] << 8);
