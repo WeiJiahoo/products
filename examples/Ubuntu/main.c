@@ -5,6 +5,7 @@
 #include <errno.h> /* Error number definitions */
 #include <termios.h> /* POSIX terminal control definitions */
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -35,7 +36,7 @@ int time_out(int second)
 	time_value.tv_sec = second;
 	time_value.tv_usec = 0;
 
-	return select(0,NULL,NULL,NULL,&time_value);
+	return select(0, NULL, NULL, NULL, &time_value);
 }
 
 int ret_frame_count(void)
@@ -57,10 +58,10 @@ int open_port(char *port_device)
 	if (fd == -1)
     {
         perror("open_port: Unable to open SerialPort");
-		puts("Please enter usb port append to the execution command!!!");
-		puts("Please enter ctrl + 'c' to quit...\n");
-		return(-1);
-    }
+		puts("Please check the usb port name!!!");
+		puts("such as \" sudo ./main ttyUSB0 \"");
+		exit(0);
+	}
 
     if(fcntl(fd, F_SETFL, 0)<0)
 	{
@@ -78,8 +79,6 @@ int open_port(char *port_device)
 	else 
 	{
 		printf("isatty success!\n");
-		printf("1");
-	
 	}
 
 
@@ -104,38 +103,38 @@ void *pthread_frame_rate(void *arg)
 }
 
 
-int main(int argc,const char *argv[])
+int main(int argc, const char *argv[])
 {
-	pthread_t ph_rate;
-	int ret_pth1 = pthread_create(&ph_rate, NULL, pthread_frame_rate, NULL);
+
 	int fd = 0;
     char dir_usb_dev[64] = "/dev/";
 
 	if(argc >1)
 	{
-		strcat(dir_usb_dev,argv[1]);
+		strcat(dir_usb_dev, argv[1]);
 	  	fd = open_port(dir_usb_dev);
 	}
 	else
 	{
 		puts("Please enter USB port append to the execution command!!!");
-		return 0;
+		exit(0);	
 	}
 
-	imu_data_decode_init();
-    
+	pthread_t ph_rate;
+	int ret_pth = pthread_create(&ph_rate, NULL, pthread_frame_rate, NULL);
 
-	
+	imu_data_decode_init();
+
 	ssize_t n = 0;
 	int i;
 
-	while(1)
+	while(true)
 	{
 		n = read(fd, buf, sizeof(buf));
 
 		if(n > 0)
 		{
-			for(i=0; i<n; i++)
+			for(i=0; i < n; i++)
 			{
 				Packet_Decode(buf[i]);
 			}
@@ -147,9 +146,9 @@ int main(int argc,const char *argv[])
 			get_eul(eul);
 			get_quat(quat);
 		
-			printf("\033c");
+			puts("\033c");
 
-			printf("    Device ID:  %-8d\n",ID);
+			printf("    Device ID:  %-8d\n", ID);
 			printf("   Frame Rate: %4dHz\n", frame_rate);
 			if(acc_tag_flag)
 				printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n", acc[0], acc[1], acc[2]);
@@ -162,7 +161,7 @@ int main(int argc,const char *argv[])
 			if(quat_tag_flag)
 				printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n", quat[0], quat[1], quat[2], quat[3]);
 
-			printf("Please enter ctrl + 'c' to quit...\n");
+			puts("Please enter ctrl + 'c' to quit...");
 
 		}
 	}	

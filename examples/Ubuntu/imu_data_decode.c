@@ -22,7 +22,7 @@ static float mag[3];
 static float eul[3];
 static float quat[4];
 static uint8_t id;
-static int frame_count;
+int frame_count;
     
 	
 int get_frame_count(void)

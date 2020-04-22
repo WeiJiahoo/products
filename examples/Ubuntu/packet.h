@@ -6,8 +6,6 @@
 
 #define MAX_PACKET_LEN          (2048)
 
-extern int frame_count;
-
 typedef struct
 {
     uint32_t ofs;

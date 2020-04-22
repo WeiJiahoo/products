@@ -9,7 +9,7 @@ extern bool gyr_tag_flag;
 extern bool mag_tag_flag;
 extern bool eul_tag_flag;
 extern bool quat_tag_flag;
-
+extern int frame_count;
 
 typedef enum 
 {
@@ -26,7 +26,7 @@ typedef enum
 }ItemID_t;
 
 int imu_data_decode_init(void);
-int copy_data_to_array(int *dest,uint8_t *src,int offset);
+int stream2int16(int *dest,uint8_t *src,int offset);
 int get_raw_acc(float* a);
 int get_frame_count(void);
 int get_raw_gyr(float* g);
