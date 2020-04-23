@@ -86,8 +86,6 @@ void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent Func)
  * @param  c ´®¿ÚÊý¾Ý
  * @retval CH_OK
  */
-
-
 uint32_t Packet_Decode(uint8_t c)
 {
     static uint16_t CRCReceived = 0;            /* CRC value received from a frame */

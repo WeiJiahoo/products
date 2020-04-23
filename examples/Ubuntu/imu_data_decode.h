@@ -4,12 +4,26 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-extern bool acc_tag_flag;
-extern bool gyr_tag_flag;
-extern bool mag_tag_flag;
-extern bool eul_tag_flag;
-extern bool quat_tag_flag;
+#define BIT_VALID_ID	(0)
+#define BIT_VALID_ACC	(1)
+#define BIT_VALID_GYR	(2)
+#define BIT_VALID_MAG	(3)
+#define BIT_VALID_EUL	(4)
+#define BIT_VALID_QUAT	(5)
+
 extern int frame_count;
+
+
+typedef struct
+{
+	uint8_t id;
+	uint8_t bitmap;		/* each bit indicate data valid or not: bit0:acc  bit1:gyr,  bit2:mag */
+	float acc[3];
+	float gyr[3];
+	float mag[3];
+	float eul[3];
+	float quat[4];
+}imt_data_t;
 
 typedef enum 
 {
@@ -26,14 +40,15 @@ typedef enum
 }ItemID_t;
 
 int imu_data_decode_init(void);
-int stream2int16(int *dest,uint8_t *src,int offset);
-int get_raw_acc(float* a);
-int get_frame_count(void);
-int get_raw_gyr(float* g);
-int get_raw_mag(float* m);
-int get_id(uint8_t *user_id);
-int get_eul(float* e);
-int get_quat(float* q);
+//int get_raw_acc(float* a);
+//int get_frame_count(void);
+//int get_raw_gyr(float* g);
+//int get_raw_mag(float* m);
+//int get_id(uint8_t *user_id);
+//int get_eul(float* e);
+//int get_quat(float* q);
+
+int get_imu_data(imt_data_t *data);
 
 #endif
 

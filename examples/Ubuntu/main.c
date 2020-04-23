@@ -23,6 +23,7 @@
 /* recv freq */
 static int frame_rate;
 static uint8_t ID = 0;
+/* 全部按结构体处理 */
 static float acc[3] = {0};
 static float gyr[3] = {0};
 static float mag[3] = {0};
