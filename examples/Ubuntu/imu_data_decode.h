@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #define MAX_LENGTH 16
-#define size 5
 
 extern int frame_count;
 
