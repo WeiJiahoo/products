@@ -39,9 +39,9 @@
         }
     }
     ```
-6. 宣告 "imu_data_t imu"，呼叫 "dump_rf_data(&imu)"(無線接收器)或 "dump_imu_data(&imu)"(USB節點)；將數據存入"imu"。
+6. 宣告 `imu_data_t imu`，呼叫 `dump_rf_data(&imu)`(無線接收器)或 `dump_imu_data(&imu)`(USB節點)；將數據存入`imu`。
     想獲得 pitch/roll/yaw 的話依序為 imu.eul[0]，imu.eul[1]，imu.eul[2]。
-    imu_data_t 結構型態參考以下:
+    `imu_data_t` 結構型態參考以下:
 
     ```C++
     typedef struct

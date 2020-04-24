@@ -22,7 +22,17 @@
 
 /* recv freq */
 static int frame_rate;
+<<<<<<< HEAD
 
+=======
+static uint8_t ID = 0;
+/* 全部按结构体处理 */
+static float acc[3] = {0};
+static float gyr[3] = {0};
+static float mag[3] = {0};
+static float eul[3] = {0};
+static float quat[4]  = {0};
+>>>>>>> fd06b4be97443ee993410c66ccfe70d59c711947
 static uint8_t buf[2048];
 	
 int time_out(int second)

@@ -4,6 +4,18 @@
 #include "packet.h"
 #include "imu_data_decode.h"
 
+<<<<<<< HEAD
+=======
+
+//bool acc_tag_flag = false;
+//bool gyr_tag_flag = false;
+//bool mag_tag_flag = false;
+//bool eul_tag_flag = false;
+//bool quat_tag_flag = false;
+//bool imu_tag_flag = false;
+//bool gw_tag_flag = false;
+
+>>>>>>> fd06b4be97443ee993410c66ccfe70d59c711947
 
 
 static Packet_t RxPkt; /* used for data receive */
@@ -16,7 +28,26 @@ static Packet_t RxPkt; /* used for data receive */
  *
  */
 
+<<<<<<< HEAD
 int frame_count;
+=======
+
+
+static imu_data_t imu_data;
+
+int frame_count;
+    
+int get_imu_data(imt_data_t *data)
+{
+	
+}
+	
+	
+int get_frame_count(void)
+{
+	return frame_count;
+}
+>>>>>>> fd06b4be97443ee993410c66ccfe70d59c711947
 
 receive_imusol_packet_t receive_imusol;
 receive_gwsol_packet_t receive_gwsol;
@@ -39,6 +70,13 @@ static int stream2int16(int *dest,uint8_t *src)
 	return 0;
 }   
 
+static int stream2int16(int *dest, uint8_t *src)
+{
+	dest[0] = (int16_t)(src[0 + 0] | src[0 + 1] << 8);
+	dest[1] = (int16_t)(src[0 + 2] | src[0 + 3] << 8);
+	dest[2] = (int16_t)(src[0 + 4] | src[0 + 5] << 8);	
+	return 0;
+}
 
 /*  callback function of  when recv a data frame successfully */
 static void OnDataReceived(Packet_t *pkt)
@@ -81,11 +119,19 @@ static void OnDataReceived(Packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemMagRaw:
+<<<<<<< HEAD
 			receive_imusol.bitmap |= 1 << 3;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.mag[0] = (float)temp[0] / 10;
 			receive_imusol.mag[1] = (float)temp[1] / 10;
 			receive_imusol.mag[2] = (float)temp[2] / 10;
+=======
+			mag_tag_flag = true;
+			stream2int16(temp, p + offset + 1);
+			mag[0] = (float)temp[0] / 10;
+			mag[1] = (float)temp[1] / 10;
+			mag[2] = (float)temp[2] / 10;
+>>>>>>> fd06b4be97443ee993410c66ccfe70d59c711947
 			offset += 7;
 			break;
 		case kItemRotationEul:
