@@ -104,6 +104,7 @@ static void OnDataReceived(Packet_t *pkt)
 		case kItemPressure:
 			offset += 5;
 			break;
+
 		case KItemIMUSOL:
 			receive_imusol.bitmap |= 0x1f;
 
@@ -117,28 +118,25 @@ static void OnDataReceived(Packet_t *pkt)
 			offset += 76;
 			break;
 		case KItemGWSOL:
-			/*
-			 *创建五个数组，acc[12 x 16].....
-			 *从数组中打印数据
-			 *屏幕上显示连接到的节点数据
-			 *节点编号0-15
-			 *  0	1	2	3
-			 *  4	5	6	7
-			 *  8	9	10	11
-			 *  12	13	14	15
-			 *
-			 */
 
-		//	receive_id
-		//		node_total
-				switch(p[offset])
-				{
-					case KItemIMUSOL:
-						break;
+			receive_gwsol.tag = p[offset];
+			receive_gwsol.target_id = p[offset + 1];
+			receive_gwsol.node_total = p[offset + 2];
+			offset += 8;
+			for (int i = 0; i < receive_gwsol.node_total; i++)
+			{
+				receive_gwsol.receive_imusol[i].bitmap |= 0x1f;
+				receive_gwsol.receive_imusol[i].tag = p[offset];
+				receive_gwsol.receive_imusol[i].id = p[offset + 1];
+				memcpy(receive_gwsol.receive_imusol[i].acc, p + offset + 12, sizeof(receive_imusol.acc));
+				memcpy(receive_gwsol.receive_imusol[i].gyr, p + offset + 24, sizeof(receive_imusol.gyr));
+				memcpy(receive_gwsol.receive_imusol[i].mag, p + offset + 36, sizeof(receive_imusol.mag));
+				memcpy(receive_gwsol.receive_imusol[i].eul, p + offset + 48, sizeof(receive_imusol.eul));
+				memcpy(receive_gwsol.receive_imusol[i].quat, p + offset + 60, sizeof(receive_imusol.quat));
+				offset += 76;
 
-				}
-			
-	
+			}
+
 			break;
 		default:
 			printf("data decode wrong\r\n");

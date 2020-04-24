@@ -24,6 +24,7 @@
 static int frame_rate;
 
 static uint8_t buf[2048];
+void printf_data_packet(receive_imusol_packet_t *data);
 	
 int time_out(int second)
 {
@@ -126,7 +127,7 @@ int main(int argc, const char *argv[])
 
 	ssize_t n = 0;
 	int i;
-
+				
 	while(true)
 	{
 		n = read(fd, buf, sizeof(buf));
@@ -143,26 +144,19 @@ int main(int argc, const char *argv[])
 			puts("\033c");
 
 			if(!receive_gwsol.tag)
-			{
-				if(receive_imusol.bitmap & BIT_VALID_ID)
-					printf("    Device ID:  %-8d\n",  receive_imusol.id);
-				printf("   Frame Rate: %4dHz\n", frame_rate);
-				if(receive_imusol.bitmap & BIT_VALID_ACC)
-					printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",  receive_imusol.acc[0],  receive_imusol.acc[1],  receive_imusol.acc[2]);
-				if(receive_imusol.bitmap & BIT_VALID_GYR)
-					printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",  receive_imusol.gyr[0],  receive_imusol.gyr[1],  receive_imusol.gyr[2]);
-				if(receive_imusol.bitmap & BIT_VALID_MAG)
-					printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",  receive_imusol.mag[0],  receive_imusol.mag[1],  receive_imusol.mag[2]);
-				if(receive_imusol.bitmap & BIT_VALID_EUL)
-					printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",  receive_imusol.eul[0],  receive_imusol.eul[1],  receive_imusol.eul[2]);
-				if(receive_imusol.bitmap & BIT_VALID_QUAT)
-					printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",  receive_imusol.quat[0],  receive_imusol.quat[1],  receive_imusol.quat[2],  receive_imusol.quat[3]);
-
-				puts("Please enter ctrl + 'c' to quit...");
-			}
+				printf_data_packet(&receive_imusol);
 			else
 			{
 				/* puts gw data packet */
+				printf("        GW ID:  %-8d\n",receive_gwsol.target_id);
+				for(int i = 0; i < receive_gwsol.node_total; i++)
+				{ 
+					printf("      Node ID:  %-8d\n",  receive_gwsol.receive_imusol[i].id);
+					printf_data_packet(&receive_gwsol.receive_imusol[i]);
+					puts("");
+				}
+				
+				puts("Please enter ctrl + 'c' to quit...");
 			}
 		}
 	}	
@@ -171,3 +165,23 @@ int main(int argc, const char *argv[])
 
     close(fd);
 }
+
+void printf_data_packet(receive_imusol_packet_t *data)
+{
+	if(data->bitmap & BIT_VALID_ID)
+		printf("    Device ID:  %-8d\n",  data->id);
+	printf("   Frame Rate: %4dHz\n", frame_rate);
+	if(data->bitmap & BIT_VALID_ACC)
+		printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",  data->acc[0],  data->acc[1],  data->acc[2]);
+	if(data->bitmap & BIT_VALID_GYR)
+		printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",  data->gyr[0],  data->gyr[1],  data->gyr[2]);
+	if(data->bitmap & BIT_VALID_MAG)
+		printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",  data->mag[0],  data->mag[1],  data->mag[2]);
+	if(data->bitmap & BIT_VALID_EUL)
+		printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",  data->eul[0],  data->eul[1],  data->eul[2]);
+	if(data->bitmap & BIT_VALID_QUAT)
+		printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",  data->quat[0],  data->quat[1],  data->quat[2],  data->quat[3]);
+
+	puts("Please enter ctrl + 'c' to quit...");
+}
+			
