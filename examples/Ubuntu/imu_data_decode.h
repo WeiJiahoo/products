@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#define MAX_LENGTH 16
 
 extern bool acc_tag_flag;
 extern bool gyr_tag_flag;
@@ -11,6 +12,36 @@ extern bool eul_tag_flag;
 extern bool quat_tag_flag;
 extern int frame_count;
 
+#define BIT_VALID_ID   (0)
+#define BIT_VALID_ACC  (1)
+#define BIT_VALID_GYR  (2)
+#define BIT_VALID_MAG  (3)
+#define BIT_VALID_EUL  (4)
+#define BIT_VALID_QUAT (5)
+
+typedef struct receive_imusol_packet_t {
+	uint8_t tag;
+	uint8_t id;
+	uint8_t bitmap;
+	uint8_t	resereve[10];
+
+	float acc[3];
+	float gyr[3];
+	float mag[3];
+	float eul[3];
+	float quat[4];
+
+}receive_imusol_packet_t;
+
+typedef struct receive_gwsol_packet_t {
+	uint8_t tag;
+	uint8_t bitmap;
+	uint8_t target_id;
+	uint8_t node_total;
+	uint8_t reserve[5];
+	receive_imusol_packet_t receive_imusol[MAX_LENGTH];
+}receive_gwsol_packet_t;
+	
 typedef enum 
 {
     kItemID =                   0x90,   /* user programed ID   */
@@ -21,19 +52,13 @@ typedef enum
     kItemRotationQuat =         0xD1,   /* att q               */
     kItemPressure =             0xF0,   /* pressure            */
     kItemEnd =                  0x00,   
-	KItemIMUSOL =              0x91,   /* IMUSOL  */
-	KItemGWSOL =               0x62,   /* RFSOL  */
+	KItemIMUSOL =               0x91,   /* IMUSOL  */
+	KItemGWSOL =                0x62,   /* RFSOL  */
 }ItemID_t;
 
 int imu_data_decode_init(void);
-int stream2int16(int *dest,uint8_t *src,int offset);
-int get_raw_acc(float* a);
-int get_frame_count(void);
-int get_raw_gyr(float* g);
-int get_raw_mag(float* m);
-int get_id(uint8_t *user_id);
-int get_eul(float* e);
-int get_quat(float* q);
+int get_imu_data(receive_imusol_packet_t *data);
+int get_gw_data(receive_gwsol_packet_t *data);
 
 #endif
 
