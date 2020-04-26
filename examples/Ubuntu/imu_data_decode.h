@@ -5,7 +5,8 @@
 #include <stdbool.h>
 #define MAX_LENGTH 16
 
-extern int frame_count;
+extern uint32_t frame_count;
+extern uint8_t bitmap;
 
 #define BIT_VALID_ID   (0)
 #define BIT_VALID_ACC  (1)
@@ -13,11 +14,11 @@ extern int frame_count;
 #define BIT_VALID_MAG  (3)
 #define BIT_VALID_EUL  (4)
 #define BIT_VALID_QUAT (5)
+#define BIT_VALID_ALL  (0x3F)
 
 typedef struct receive_imusol_packet_t {
 	uint8_t tag;
 	uint8_t id;
-	uint8_t bitmap;
 	float acc[3];
 	float gyr[3];
 	float mag[3];
@@ -28,9 +29,8 @@ typedef struct receive_imusol_packet_t {
 
 typedef struct receive_gwsol_packet_t {
 	uint8_t tag;
-	uint8_t bitmap;
-	uint8_t target_id;
-	uint8_t node_total;
+	uint8_t gw_id;
+	uint8_t n;
 	receive_imusol_packet_t receive_imusol[MAX_LENGTH];
 }__attribute__((packed())) receive_gwsol_packet_t;
 	 

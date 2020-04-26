@@ -16,7 +16,8 @@ static packet_t RxPkt; /* used for data receive */
  *
  */
 
-int frame_count;
+uint32_t frame_count;
+uint8_t bitmap;
 
 receive_imusol_packet_t receive_imusol;
 receive_gwsol_packet_t receive_gwsol;
@@ -57,15 +58,15 @@ static void on_data_received(packet_t *pkt)
 	{
 		switch(p[offset])
 		{
-			receive_imusol.bitmap = 0;
+			bitmap = 0;
 
 		case kItemID:
-			receive_imusol.bitmap |= 1;
-			 receive_imusol.id = p[1];
+			bitmap |= 1 << BIT_VALID_ID;
+			receive_imusol.id = p[1];
 			offset += 2;
 			break;
 		case kItemAccRaw:
-			receive_imusol.bitmap |= 1 << 1;
+			bitmap |= 1 << BIT_VALID_ID;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.acc[0] = (float)temp[0] / 1000;
 			receive_imusol.acc[1] = (float)temp[1] / 1000;
@@ -73,7 +74,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemGyrRaw:
-			receive_imusol.bitmap |= 1 << 2;
+			bitmap |= 1 << BIT_VALID_ID;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.gyr[0] = (float)temp[0] / 10;
 			receive_imusol.gyr[1] = (float)temp[1] / 10;
@@ -81,7 +82,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemMagRaw:
-			receive_imusol.bitmap |= 1 << 3;
+			bitmap |= 1 << BIT_VALID_ID;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.mag[0] = (float)temp[0] / 10;
 			receive_imusol.mag[1] = (float)temp[1] / 10;
@@ -89,7 +90,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemRotationEul:
-			receive_imusol.bitmap |= 1 << 4;
+			bitmap |= 1 << BIT_VALID_ID;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.eul[1] = (float)temp[0] / 100;
 			receive_imusol.eul[0] = (float)temp[1] / 100;
@@ -97,7 +98,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemRotationQuat:
-			receive_imusol.bitmap |= 1 << 5;
+			bitmap |= 1 << BIT_VALID_ID;
 			memcpy(receive_imusol.quat, p + offset + 1, sizeof( receive_imusol.quat));
 			offset += 17;
 			break;
@@ -106,33 +107,27 @@ static void on_data_received(packet_t *pkt)
 			break;
 
 		case KItemIMUSOL:
-			receive_imusol.bitmap |= 0x1f;
+			bitmap |= BIT_VALID_ALL;
 
 			receive_imusol.id =p[offset + 1];
 	
-			memcpy(receive_imusol.acc, p + 12, sizeof( receive_imusol.acc));
-			memcpy(receive_imusol.gyr, p + 24, sizeof( receive_imusol.gyr));
-			memcpy(receive_imusol.mag, p + 36, sizeof( receive_imusol.mag));
-			memcpy(receive_imusol.eul, p + 48, sizeof( receive_imusol.eul));
-			memcpy(receive_imusol.quat, p + 60, sizeof( receive_imusol.quat));
+			memcpy(receive_imusol.acc, p + 12 , sizeof(float) * 16);
+
 			offset += 76;
 			break;
 		case KItemGWSOL:
 
 			receive_gwsol.tag = p[offset];
-			receive_gwsol.target_id = p[offset + 1];
-			receive_gwsol.node_total = p[offset + 2];
+			receive_gwsol.gw_id = p[offset + 1]; 
+			receive_gwsol.n = p[offset + 2];
 			offset += 8;
-			for (int i = 0; i < receive_gwsol.node_total; i++)
+			for (int i = 0; i < receive_gwsol.n; i++)
 			{
-				receive_gwsol.receive_imusol[i].bitmap |= 0x1f;
+				bitmap |= BIT_VALID_ALL;
 				receive_gwsol.receive_imusol[i].tag = p[offset];
 				receive_gwsol.receive_imusol[i].id = p[offset + 1];
-				memcpy(receive_gwsol.receive_imusol[i].acc, p + offset + 12, sizeof(receive_imusol.acc));
-				memcpy(receive_gwsol.receive_imusol[i].gyr, p + offset + 24, sizeof(receive_imusol.gyr));
-				memcpy(receive_gwsol.receive_imusol[i].mag, p + offset + 36, sizeof(receive_imusol.mag));
-				memcpy(receive_gwsol.receive_imusol[i].eul, p + offset + 48, sizeof(receive_imusol.eul));
-				memcpy(receive_gwsol.receive_imusol[i].quat, p + offset + 60, sizeof(receive_imusol.quat));
+				memcpy(&receive_gwsol.receive_imusol[i].acc, p + offset + 12 , sizeof(float) * 16);
+
 				offset += 76;
 			}
 			break;

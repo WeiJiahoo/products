@@ -152,10 +152,9 @@ int main(int argc, const char *argv[])
 			else
 			{
 				/* printf gw data packet */
-				printf("        GW ID:  %-8d\n",receive_gwsol.target_id);
-				for(int i = 0; i < receive_gwsol.node_total; i++)
+				printf("        GW ID:  %-8d\n",receive_gwsol.gw_id);
+				for(int i = 0; i < receive_gwsol.n; i++)
 				{ 
-					printf("      Node ID:  %-8d\n",  receive_gwsol.receive_imusol[i].id);
 					printf_data_packet(&receive_gwsol.receive_imusol[i]);
 					puts("");
 				}
@@ -172,18 +171,18 @@ int main(int argc, const char *argv[])
 
 void printf_data_packet(receive_imusol_packet_t *data)
 {
-	if(data->bitmap & BIT_VALID_ID)
+	if(bitmap & 1 << BIT_VALID_ID)
 		printf("    Device ID:  %-8d\n",  data->id);
 	printf("   Frame Rate: %4dHz\n", frame_rate);
-	if(data->bitmap & BIT_VALID_ACC)
+	if(bitmap & 1 << BIT_VALID_ACC)
 		printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",  data->acc[0],  data->acc[1],  data->acc[2]);
-	if(data->bitmap & BIT_VALID_GYR)
+	if(bitmap & 1 << BIT_VALID_GYR)
 		printf("   gyr(deg/s):	%8.2f %8.2f %8.2f\r\n",  data->gyr[0],  data->gyr[1],  data->gyr[2]);
-	if(data->bitmap & BIT_VALID_MAG)
+	if(bitmap & 1 << BIT_VALID_MAG)
 		printf("      mag(uT):	%8.2f %8.2f %8.2f\r\n",  data->mag[0],  data->mag[1],  data->mag[2]);
-	if(data->bitmap & BIT_VALID_EUL)
+	if(bitmap & 1 << BIT_VALID_EUL)
 		printf("   eul(R P Y):  %8.2f %8.2f %8.2f\r\n",  data->eul[0],  data->eul[1],  data->eul[2]);
-	if(data->bitmap & BIT_VALID_QUAT)
+	if(bitmap & 1 << BIT_VALID_QUAT)
 		printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",  data->quat[0],  data->quat[1],  data->quat[2],  data->quat[3]);
 
 }
