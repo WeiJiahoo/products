@@ -105,7 +105,6 @@ int main(int argc, const char *argv[])
 	receive_imusol_packet_t receive_imusol;
 	receive_gwsol_packet_t receive_gwsol;
 
-
 	int fd = 0;
     char dir_usb_dev[64] = "/dev/";
 
@@ -136,18 +135,23 @@ int main(int argc, const char *argv[])
 		{
 			for(i=0; i < n; i++)
 			{
-				Packet_Decode(buf[i]);
+				packet_decode(buf[i]);
 			}
 			get_imu_data(&receive_imusol);
 			get_gw_data(&receive_gwsol);
 
 			puts("\033c");
 
-			if(!receive_gwsol.tag)
+			if(receive_gwsol.tag != KItemGWSOL)
+			{
+				/* printf imu data packet */
 				printf_data_packet(&receive_imusol);
+				puts("Please enter ctrl + 'c' to quit...");
+			}
+
 			else
 			{
-				/* puts gw data packet */
+				/* printf gw data packet */
 				printf("        GW ID:  %-8d\n",receive_gwsol.target_id);
 				for(int i = 0; i < receive_gwsol.node_total; i++)
 				{ 
@@ -182,6 +186,5 @@ void printf_data_packet(receive_imusol_packet_t *data)
 	if(data->bitmap & BIT_VALID_QUAT)
 		printf("quat(W X Y Z):  %8.3f %8.3f %8.3f %8.3f\r\n",  data->quat[0],  data->quat[1],  data->quat[2],  data->quat[3]);
 
-	puts("Please enter ctrl + 'c' to quit...");
 }
 			

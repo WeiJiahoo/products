@@ -6,7 +6,7 @@
 
 
 
-static Packet_t RxPkt; /* used for data receive */
+static packet_t RxPkt; /* used for data receive */
 /*
  **采用结构体来保存数据
  **将标志位都集中到一个32位的变量上，用位来表示
@@ -41,7 +41,7 @@ static int stream2int16(int *dest,uint8_t *src)
 
 
 /*  callback function of  when recv a data frame successfully */
-static void OnDataReceived(Packet_t *pkt)
+static void on_data_received(packet_t *pkt)
 {
 	int temp[3] = {0};
 
@@ -134,9 +134,7 @@ static void OnDataReceived(Packet_t *pkt)
 				memcpy(receive_gwsol.receive_imusol[i].eul, p + offset + 48, sizeof(receive_imusol.eul));
 				memcpy(receive_gwsol.receive_imusol[i].quat, p + offset + 60, sizeof(receive_imusol.quat));
 				offset += 76;
-
 			}
-
 			break;
 		default:
 			printf("data decode wrong\r\n");
@@ -149,7 +147,7 @@ static void OnDataReceived(Packet_t *pkt)
 
 int imu_data_decode_init(void)
 {
-    Packet_DecodeInit(&RxPkt, OnDataReceived);
+    packet_decode_init(&RxPkt, on_data_received);
     return 0;
 }
 

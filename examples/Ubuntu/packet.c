@@ -17,11 +17,11 @@
 #endif
 
 
-static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t lengthInBytes)
+static void crc16_update(uint16_t *currect_crc, const uint8_t *src, uint32_t len)
 {
-    uint32_t crc = *currectCrc;
+    uint32_t crc = *currect_crc;
     uint32_t j;
-    for (j=0; j < lengthInBytes; ++j)
+    for (j=0; j < len; ++j)
     {
         uint32_t i;
         uint32_t byte = src[j];
@@ -36,7 +36,7 @@ static void crc16_update(uint16_t *currectCrc, const uint8_t *src, uint32_t leng
             crc = temp;
         }
     } 
-    *currectCrc = crc;
+    *currect_crc = crc;
 }
 
 
@@ -52,8 +52,8 @@ enum status
 };
 
 /* function pointer */
-static OnDataReceivedEvent EventHandler;
-static Packet_t *RxPkt;
+static on_data_received_event event_handler;
+static packet_t *RxPkt;
 
 
  /**
@@ -73,10 +73,10 @@ static Packet_t *RxPkt;
  * @endcode
  * @retval None
  */
-void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent Func)
+void packet_decode_init(packet_t *pkt, on_data_received_event func)
 {
-    EventHandler = Func;
-    memset(pkt, 0, sizeof(Packet_t));
+    event_handler = func;
+    memset(pkt, 0, sizeof(packet_t));
     RxPkt = pkt;
 }
 
@@ -88,7 +88,7 @@ void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent Func)
  */
 
 
-uint32_t Packet_Decode(uint8_t c)
+uint32_t packet_decode(uint8_t c)
 {
     static uint16_t CRCReceived = 0;            /* CRC value received from a frame */
     static uint16_t CRCCalculated = 0;          /* CRC value caluated from a frame */
@@ -103,12 +103,8 @@ uint32_t Packet_Decode(uint8_t c)
 			break;
         case kStatus_Cmd:
             RxPkt->type = c;
-			switch(RxPkt->type)
-			{
-				case 0xA5:  /* Data */
-					status = kStatus_LenLow;
-					break;
-			}
+			if(RxPkt->type == 0xA5)
+				status = kStatus_LenLow;
             break;
         case kStatus_LenLow:
             RxPkt->payload_len = c;
@@ -137,7 +133,7 @@ uint32_t Packet_Decode(uint8_t c)
             if(RxPkt->type == 0xA7 && RxPkt->ofs >= 8)
             {
                 RxPkt->payload_len = 8;
-                EventHandler(RxPkt);
+                event_handler(RxPkt);
                 status = kStatus_Idle;
             }
             if(RxPkt->ofs >= MAX_PACKET_LEN)
@@ -155,7 +151,7 @@ uint32_t Packet_Decode(uint8_t c)
                 /* CRC match */
                 if(CRCCalculated == CRCReceived)
                 {
-                    EventHandler(RxPkt);
+                    event_handler(RxPkt);
                 }
                 status = kStatus_Idle;
             }

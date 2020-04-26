@@ -18,25 +18,22 @@ typedef struct receive_imusol_packet_t {
 	uint8_t tag;
 	uint8_t id;
 	uint8_t bitmap;
-	uint8_t	resereve[10];
-
 	float acc[3];
 	float gyr[3];
 	float mag[3];
 	float eul[3];
 	float quat[4];
 
-}receive_imusol_packet_t;
+}__attribute__((packed())) receive_imusol_packet_t;
 
 typedef struct receive_gwsol_packet_t {
 	uint8_t tag;
 	uint8_t bitmap;
 	uint8_t target_id;
 	uint8_t node_total;
-	uint8_t reserve[5];
 	receive_imusol_packet_t receive_imusol[MAX_LENGTH];
-}receive_gwsol_packet_t;
-	
+}__attribute__((packed())) receive_gwsol_packet_t;
+	 
 typedef enum 
 {
     kItemID =                   0x90,   /* user programed ID   */

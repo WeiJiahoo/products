@@ -13,13 +13,13 @@ typedef struct
     uint16_t payload_len;           
     uint16_t len;                   /* total frame len */
     uint8_t type;
-}Packet_t;
+}packet_t;
 
 
 /* packet Rx API */
-typedef void (*OnDataReceivedEvent)(Packet_t *pkt);
-void Packet_DecodeInit(Packet_t *pkt, OnDataReceivedEvent rx_handler);
-uint32_t Packet_Decode(uint8_t c);
+typedef void (*on_data_received_event)(packet_t *pkt);
+void packet_decode_init(packet_t *pkt, on_data_received_event rx_handler);
+uint32_t packet_decode(uint8_t c);
 
 
 #endif
