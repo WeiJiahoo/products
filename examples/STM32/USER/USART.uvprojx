@@ -400,21 +400,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>HARDWARE</GroupName>
-          <Files>
-            <File>
-              <FileName>led.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\LED\led.c</FilePath>
-            </File>
-            <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\KEY\key.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>SYSTEM</GroupName>
           <Files>
             <File>
@@ -478,9 +463,9 @@
           <GroupName>README</GroupName>
           <Files>
             <File>
-              <FileName>README.TXT</FileName>
+              <FileName>Readme.md</FileName>
               <FileType>5</FileType>
-              <FilePath>..\README.TXT</FilePath>
+              <FilePath>..\Readme.md</FilePath>
             </File>
           </Files>
         </Group>
