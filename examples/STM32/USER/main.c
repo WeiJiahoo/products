@@ -41,7 +41,7 @@ int main(void)
     uart_init(115200);	                                   //串口初始化为115200
   
     imu_data_decode_init();                                //映射解析函数
-    SysTick_Init();                                        //开启SysTick，定时1秒
+    SysTick_Init();                                        //开启SysTick，定时20ms
 
     while(1)
     {
@@ -80,7 +80,6 @@ void SysTick_Handler(void)
         usart1_output_flag = 1;
     }
     
-    SysTick->LOAD = (float)SystemCoreClock / 40;
     div++;
 }
 
@@ -89,7 +88,8 @@ void USART2_IRQHandler(void)                	            //串口2中断服务程序
 {
     uint8_t ch;
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)   //接收中断 
-		ch =USART_ReceiveData(USART2);	                    //读取接收到的数据
+		ch = USART_ReceiveData(USART2);	                    //读取接收到的数据
+
     packet_decode(ch);                                      //解析数据
 } 
 
