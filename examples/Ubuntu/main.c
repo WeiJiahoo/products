@@ -24,7 +24,7 @@
 static int frame_rate;
 
 static uint8_t buf[2048];
-void printf_data_packet(receive_imusol_packet_t *data);
+void dump_data_packet(receive_imusol_packet_t *data);
 	
 int time_out(int second)
 {
@@ -102,11 +102,11 @@ void *pthread_frame_rate(void *arg)
 
 int main(int argc, const char *argv[])
 {
-	receive_imusol_packet_t receive_imusol;
-	receive_gwsol_packet_t receive_gwsol;
-
 	int fd = 0;
     char dir_usb_dev[64] = "/dev/";
+
+	int i;
+	ssize_t n = 0;
 
 	if(argc >1)
 	{
@@ -122,10 +122,7 @@ int main(int argc, const char *argv[])
 	pthread_t ph_rate;
 	int ret_pth = pthread_create(&ph_rate, NULL, pthread_frame_rate, NULL);
 
-	imu_data_decode_init();
-
-	ssize_t n = 0;
-	int i;
+	imu_data_decode_init(); 
 				
 	while(true)
 	{
@@ -137,25 +134,23 @@ int main(int argc, const char *argv[])
 			{
 				packet_decode(buf[i]);
 			}
-			get_imu_data(&receive_imusol);
-			get_gw_data(&receive_gwsol);
 
 			puts("\033c");
 
 			if(receive_gwsol.tag != KItemGWSOL)
 			{
 				/* printf imu data packet */
-				printf_data_packet(&receive_imusol);
+				dump_data_packet(&receive_imusol);
 				puts("Please enter ctrl + 'c' to quit...");
 			}
-
+ 
 			else
 			{
 				/* printf gw data packet */
 				printf("        GW ID:  %-8d\n",receive_gwsol.gw_id);
-				for(int i = 0; i < receive_gwsol.n; i++)
+				for(i = 0; i < receive_gwsol.n; i++)
 				{ 
-					printf_data_packet(&receive_gwsol.receive_imusol[i]);
+					dump_data_packet(&receive_gwsol.receive_imusol[i]);
 					puts("");
 				}
 				
@@ -169,7 +164,7 @@ int main(int argc, const char *argv[])
     close(fd);
 }
 
-void printf_data_packet(receive_imusol_packet_t *data)
+void dump_data_packet(receive_imusol_packet_t *data)
 {
 	if(bitmap & 1 << BIT_VALID_ID)
 		printf("    Device ID:  %-8d\n",  data->id);
