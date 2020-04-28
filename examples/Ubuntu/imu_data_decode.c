@@ -18,19 +18,8 @@ static packet_t RxPkt; /* used for data receive */
 
 uint32_t frame_count;
 uint8_t bitmap;
-
 receive_imusol_packet_t receive_imusol;
 receive_gwsol_packet_t receive_gwsol;
-
-int get_imu_data(receive_imusol_packet_t *data)
-{
-	memcpy(data,&receive_imusol,sizeof(receive_imusol_packet_t));
-}
-
-int get_gw_data(receive_gwsol_packet_t *data)
-{
-	memcpy(data,&receive_gwsol,sizeof(receive_gwsol_packet_t));
-}
 
 static int stream2int16(int *dest,uint8_t *src)
 {
@@ -45,21 +34,20 @@ static int stream2int16(int *dest,uint8_t *src)
 static void on_data_received(packet_t *pkt)
 {
 	int temp[3] = {0};
+	int offset = 0;
+	uint8_t *p = pkt->buf;
 
-	frame_count++;
 	if(pkt->type != 0xA5)
     {
         return;
     }
 
-    int offset = 0;
-    uint8_t *p = pkt->buf;
 	while(offset < pkt->payload_len)
 	{
+		frame_count++;
+        bitmap = 0;
 		switch(p[offset])
 		{
-			bitmap = 0;
-
 		case kItemID:
 			bitmap |= 1 << BIT_VALID_ID;
 			receive_imusol.id = p[1];
@@ -132,7 +120,6 @@ static void on_data_received(packet_t *pkt)
 			}
 			break;
 		default:
-			printf("data decode wrong\r\n");
 			return;
 			break;
 		}

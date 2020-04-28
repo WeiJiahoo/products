@@ -34,6 +34,9 @@ typedef struct receive_gwsol_packet_t {
 	receive_imusol_packet_t receive_imusol[MAX_LENGTH];
 }__attribute__((packed())) receive_gwsol_packet_t;
 	 
+extern receive_imusol_packet_t receive_imusol;
+extern receive_gwsol_packet_t receive_gwsol;
+
 typedef enum 
 {
     kItemID =                   0x90,   /* user programed ID   */
@@ -49,8 +52,6 @@ typedef enum
 }ItemID_t;
 
 int imu_data_decode_init(void);
-int get_imu_data(receive_imusol_packet_t *data);
-int get_gw_data(receive_gwsol_packet_t *data);
 
 #endif
 
