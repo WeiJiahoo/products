@@ -12,18 +12,6 @@ uint8_t bitmap;
 __align(4)  receive_imusol_packet_t receive_imusol;
 __align(4)  receive_gwsol_packet_t receive_gwsol;
 
-int get_imu_data(receive_imusol_packet_t *data)
-{
-	memcpy((void *)data,&receive_imusol,sizeof(receive_imusol_packet_t));
-    return 0;
-}
-
-int get_gw_data(receive_gwsol_packet_t *data)
-{
-	memcpy((void *)data,&receive_gwsol,sizeof(receive_gwsol_packet_t));
-    return 0;
-}
-
 static int stream2int16(int *dest,uint8_t *src)
 {
 	dest[0] = (int16_t)(src[0] | src[1] << 8);

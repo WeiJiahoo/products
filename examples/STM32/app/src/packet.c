@@ -91,15 +91,12 @@ uint32_t packet_decode(uint8_t c)
     static uint16_t CRCCalculated = 0;          /* CRC value caluated from a frame */
     static uint8_t status = kStatus_Idle;       /* state machine */
     static uint8_t crc_header[4] = {0x5A, 0xA5, 0x00, 0x00};
-    
-    
+  
     switch(status)
     {
         case kStatus_Idle:
             if(c == 0x5A)
-            {
                 status = kStatus_Cmd;
-            }
 			break;
         case kStatus_Cmd:
             RxPkt->type = c;
@@ -129,13 +126,7 @@ uint32_t packet_decode(uint8_t c)
         case kStatus_Data:
 	
             RxPkt->buf[RxPkt->ofs++] = c;
-		
-            if(RxPkt->type == 0xA7 && RxPkt->ofs >= 8)
-            {
-                RxPkt->payload_len = 8;
-                event_handler(RxPkt);
-                status = kStatus_Idle;
-            }
+
             if(RxPkt->ofs >= MAX_PACKET_LEN)
             {
                 status = kStatus_Idle;
