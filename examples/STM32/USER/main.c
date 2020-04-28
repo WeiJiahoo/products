@@ -24,7 +24,7 @@
  官网：http://www.hipnuc.com
 ************************************************/
 
-void dump_data_packet(receive_imusol_packet_t *data);   //打印数据
+void dump_data_packet(receive_imusol_packet_t *data);     //打印数据
 void SysTick_Handler(void);                               //SysTick中断处理函数
 void SysTick_Init(void);                                  //SysTick初始化函数
 
