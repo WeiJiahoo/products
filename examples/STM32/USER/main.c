@@ -21,11 +21,10 @@
  串口2接收来自HI226或者是HI229的数据
  串口1将串口2成功接收到的数据打印到终端上
  这里的终端一般指的是PC机上串口调试助手
- 官网：http://www.hipnuc.com/index_cn.html
- 淘宝店铺：https://shop63743420.taobao.com/?spm=a230r.7195193.1997079397.2.409e386b8gkFys
+ 官网：http://www.hipnuc.com
 ************************************************/
 
-void printf_data_packet(receive_imusol_packet_t *data);   //打印数据
+void dump_data_packet(receive_imusol_packet_t *data);   //打印数据
 void SysTick_Handler(void);                               //SysTick中断处理函数
 void SysTick_Init(void);                                  //SysTick初始化函数
 
@@ -51,7 +50,7 @@ int main(void)
             if(receive_gwsol.tag != KItemGWSOL)
 			{
 				/* printf imu data packet */
-				printf_data_packet(&receive_imusol);
+				dump_data_packet(&receive_imusol);
                 putchar(10);
 			}
 			else
@@ -60,7 +59,7 @@ int main(void)
 				printf("        GW ID:  %-8d\n",receive_gwsol.gw_id);
 				for(i = 0; i < receive_gwsol.n; i++)
 				{ 
-					printf_data_packet(&receive_gwsol.receive_imusol[i]);
+					dump_data_packet(&receive_gwsol.receive_imusol[i]);
 					puts("");
 				}
 			}
@@ -102,7 +101,7 @@ void SysTick_Init(void)
 }
 
 /* printf hi229 or hi226 data packet*/
-void printf_data_packet(receive_imusol_packet_t *data)
+void dump_data_packet(receive_imusol_packet_t *data)
 {
 	if(bitmap & 1 << BIT_VALID_ID)
 		printf("    Device ID:  %-8d\r\n",  data->id);
