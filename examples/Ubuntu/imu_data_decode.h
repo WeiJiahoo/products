@@ -21,7 +21,7 @@ typedef struct receive_imusol_packet_t {
 	uint8_t id;
 	float acc[3];
 	float gyr[3];
-	float mag[3];
+	float mag[3]; 
 	float eul[3];
 	float quat[4];
 
