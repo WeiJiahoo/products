@@ -15,7 +15,7 @@ extern uint8_t bitmap;
 #define BIT_VALID_MAG  (3)
 #define BIT_VALID_EUL  (4)
 #define BIT_VALID_QUAT (5)
-#define BIT_VALID_ALL  (0x3F)
+#define BIT_VALID_ALL  (BIT_VALID_ID | BIT_VALID_ACC | BIT_VALID_GYR | BIT_VALID_MAG | BIT_VALID_EUL | BIT_VALID_QUAT)
 
 __packed typedef  struct  receive_imusol_packet_t {
 	uint8_t tag;
