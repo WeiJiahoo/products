@@ -19,7 +19,8 @@ _sys_exit(int x)
 //重定义fputc函数 
 int fputc(int ch, FILE *f)
 {      
-	while((USART1->SR&0X40)==0);//循环发送,直到发送完毕   
+	while((USART1->SR&0X40)==0)
+        continue;  
     USART1->DR = (u8) ch;      
 	return ch;
 }
