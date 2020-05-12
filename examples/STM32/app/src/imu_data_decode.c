@@ -46,7 +46,7 @@ static void on_data_received(packet_t *pkt)
                 offset += 2;
                 break;
             case kItemAccRaw:
-                bitmap |= 1 << BIT_VALID_ID;
+                bitmap |= 1 << BIT_VALID_ACC;
                 stream2int16(temp, p + offset + 1);
                 receive_imusol.acc[0] = (float)temp[0] / 1000;
                 receive_imusol.acc[1] = (float)temp[1] / 1000;
@@ -54,7 +54,7 @@ static void on_data_received(packet_t *pkt)
                 offset += 7;
                 break;
             case kItemGyrRaw:
-                bitmap |= 1 << BIT_VALID_ID;
+                bitmap |= 1 << BIT_VALID_GYR;
                 stream2int16(temp, p + offset + 1);
                 receive_imusol.gyr[0] = (float)temp[0] / 10;
                 receive_imusol.gyr[1] = (float)temp[1] / 10;
@@ -62,7 +62,7 @@ static void on_data_received(packet_t *pkt)
                 offset += 7;
                 break;
             case kItemMagRaw:
-                bitmap |= 1 << BIT_VALID_ID;
+                bitmap |= 1 << BIT_VALID_MAG;
                 stream2int16(temp, p + offset + 1);
                 receive_imusol.mag[0] = (float)temp[0] / 10;
                 receive_imusol.mag[1] = (float)temp[1] / 10;
@@ -70,7 +70,7 @@ static void on_data_received(packet_t *pkt)
                 offset += 7;
                 break;
             case kItemRotationEul:
-                bitmap |= 1 << BIT_VALID_ID;
+                bitmap |= 1 << BIT_VALID_EUL;
                 stream2int16(temp, p + offset + 1);
                 receive_imusol.eul[1] = (float)temp[0] / 100;
                 receive_imusol.eul[0] = (float)temp[1] / 100;
@@ -78,7 +78,7 @@ static void on_data_received(packet_t *pkt)
                 offset += 7;
                 break;
             case kItemRotationQuat:
-                bitmap |= 1 << BIT_VALID_ID;
+                bitmap |= 1 << BIT_VALID_QUAT;
                 memcpy((void *)receive_imusol.quat, p + offset + 1, sizeof( receive_imusol.quat));
                 offset += 17;
                 break;
