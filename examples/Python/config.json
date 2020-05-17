@@ -1,14 +1,8 @@
 {
-    "port": "COM11",
-    "baudrate": 460800,
+    "port": "COM41",
+    "baudrate": 115200,
     "report_datatype": {
-      "Expanding Information": true,
-      "acc": true,
-      "quat": true,
-      "id": true,
-      "gyr": true,
-      "mag": true,
-      "int_eul": true,
-      "test_8f": true
+      "imusol": true,
+      "gwsol": true
     }
 }
