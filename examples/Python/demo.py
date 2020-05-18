@@ -14,6 +14,6 @@ if __name__ == '__main__':
     while True:
         data = HI221GW.get_module_data()
 
-        print(data)
+        # print(data)
 
         time.sleep(0.010)

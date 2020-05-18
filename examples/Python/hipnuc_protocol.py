@@ -693,9 +693,9 @@ data_packet_properties = {
     0x62: {
         "type": "gwsol",
         "id_len": 1,
-        "data_len": 5 + 76 * 1,
+        "data_len": 76 * 1,
         "parse method": _parse_data_packet_0x62,
-        "gw_data": False
+        "gw_data": True
     },
 }
 
@@ -825,8 +825,9 @@ def extraction_information_from_frame(frame_list:list, inf_fifo,report_datatype:
 
         data_frame_list = data_frame_list[1 + 3:]
     else:
-        #若无0x61帧，则节点数默认为8
-        module_node_num = 8
+        pass
+        # #若无0x61帧，则节点数默认为1
+        # module_node_num = 1
     #遍历解析数据段内包含的数据
     while len(data_frame_list) > 0:
         if data_frame_list[0] in data_packet_properties:
@@ -848,7 +849,12 @@ def extraction_information_from_frame(frame_list:list, inf_fifo,report_datatype:
                 rel_node_num = 1
 
             id_len = data_packet_properties[data_frame_list[0]]["id_len"]
-            data_len = data_packet_properties[data_frame_list[0]]["data_len"] * rel_node_num
+
+            if data_frame_list[0] == 0x62:
+                data_len = 76 * rel_node_num + 8
+            else:
+                data_len = data_packet_properties[data_frame_list[0]]["data_len"] * rel_node_num
+
             data_frame_list = data_frame_list[id_len + data_len:]
         else:
             # raise HipnucFrame_ErrorFrame_Exception
