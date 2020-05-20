@@ -49,12 +49,12 @@ static void on_data_received(packet_t *pkt)
 		switch(p[offset])
 		{
 		case kItemID:
-			bitmap |= 1 << BIT_VALID_ID;
+			bitmap |= BIT_VALID_ID;
 			receive_imusol.id = p[1];
 			offset += 2;
 			break;
 		case kItemAccRaw:
-			bitmap |= 1 << BIT_VALID_ACC;
+			bitmap |= BIT_VALID_ACC;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.acc[0] = (float)temp[0] / 1000;
 			receive_imusol.acc[1] = (float)temp[1] / 1000;
@@ -62,7 +62,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemGyrRaw:
-			bitmap |= 1 << BIT_VALID_GYR;
+			bitmap |= BIT_VALID_GYR;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.gyr[0] = (float)temp[0] / 10;
 			receive_imusol.gyr[1] = (float)temp[1] / 10;
@@ -70,7 +70,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemMagRaw:
-			bitmap |= 1 << BIT_VALID_MAG;
+			bitmap |= BIT_VALID_MAG;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.mag[0] = (float)temp[0] / 10;
 			receive_imusol.mag[1] = (float)temp[1] / 10;
@@ -78,7 +78,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemRotationEul:
-			bitmap |= 1 << BIT_VALID_EUL;
+			bitmap |= BIT_VALID_EUL;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.eul[1] = (float)temp[0] / 100;
 			receive_imusol.eul[0] = (float)temp[1] / 100;
@@ -86,7 +86,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemRotationQuat:
-			bitmap |= 1 << BIT_VALID_QUAT;
+			bitmap |= BIT_VALID_QUAT;
 			memcpy(receive_imusol.quat, p + offset + 1, sizeof( receive_imusol.quat));
 			offset += 17;
 			break;
@@ -95,7 +95,7 @@ static void on_data_received(packet_t *pkt)
 			break;
 
 		case KItemIMUSOL:
-			bitmap |= BIT_VALID_ALL;
+			bitmap = BIT_VALID_ALL;
 
 			receive_imusol.id =p[offset + 1];
 	
@@ -111,7 +111,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 8;
 			for (int i = 0; i < receive_gwsol.n; i++)
 			{
-				bitmap |= BIT_VALID_ALL;
+				bitmap = BIT_VALID_ALL;
 				receive_gwsol.receive_imusol[i].tag = p[offset];
 				receive_gwsol.receive_imusol[i].id = p[offset + 1];
 				memcpy(&receive_gwsol.receive_imusol[i].acc, p + offset + 12 , sizeof(float) * 16);
