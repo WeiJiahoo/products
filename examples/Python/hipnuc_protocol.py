@@ -420,17 +420,17 @@ def _parse_data_packet_0x91(data_section:list,node_num = None):
     }
     eul_temp_list.append(eul_dic)
     #quat
-    quat_X = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
-    pos += 4
     quat_W = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
+    pos += 4
+    quat_X = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
     pos += 4
     quat_Y = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
     pos += 4
     quat_Z = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
     pos += 4
     quat_dic = {
-        "X": quat_X,
         "W": quat_W,
+        "X": quat_X,
         "Y": quat_Y,
         "Z": quat_Z
     }
@@ -537,17 +537,17 @@ def _parse_data_packet_0x62(data_section:list,node_num = None):
         }
         eul_temp_list.append(eul_dic)
         #quat
-        quat_X = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
-        pos += 4
         quat_W = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
+        pos += 4
+        quat_X = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
         pos += 4
         quat_Y = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
         pos += 4
         quat_Z = float(struct.unpack("<f", bytes(data_section[pos:pos + 4]))[0])
         pos += 4
         quat_dic = {
-            "X": quat_X,
             "W": quat_W,
+            "X": quat_X,
             "Y": quat_Y,
             "Z": quat_Z
         }
