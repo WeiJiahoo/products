@@ -35,8 +35,11 @@ static void on_data_received(packet_t *pkt)
     }
 	while(offset < pkt->payload_len)
 	{
-        frame_count++;
-        bitmap &= ~BIT_VALID_ALL;
+        if(offset == 0)
+        {
+            frame_count++;
+            bitmap = 0;
+        }
 		switch(p[offset])
 		{
             case kItemID:
@@ -111,7 +114,7 @@ static void on_data_received(packet_t *pkt)
                 }
                 break;
             default:
-                return;
+                offset++;
 		}
     }
 }
