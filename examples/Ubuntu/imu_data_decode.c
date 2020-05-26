@@ -16,8 +16,8 @@ static packet_t RxPkt; /* used for data receive */
  *
  */
 
-uint32_t frame_count;
 uint8_t bitmap;
+uint32_t frame_count;
 receive_imusol_packet_t receive_imusol;
 receive_gwsol_packet_t receive_gwsol;
 
@@ -37,6 +37,7 @@ static void on_data_received(packet_t *pkt)
 	int offset = 0;
 	uint8_t *p = pkt->buf;
 
+
 	if(pkt->type != 0xA5)
     {
         return;
@@ -44,8 +45,11 @@ static void on_data_received(packet_t *pkt)
 
 	while(offset < pkt->payload_len)
 	{
-		frame_count++;
-        bitmap = 0;
+		if(offset == 0)
+		{
+			frame_count++;	
+   		    bitmap = 0;
+		}
 		switch(p[offset])
 		{
 		case kItemID:
@@ -120,8 +124,8 @@ static void on_data_received(packet_t *pkt)
 			}
 			break;
 		default:
-			return;
-			break;
+			offset++;
+
 		}
     }
 }

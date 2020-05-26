@@ -134,7 +134,6 @@ int main(int argc, const char *argv[])
 			{
 				packet_decode(buf[i]);
 			}
-
 			puts("\033c");
 
 			if(receive_gwsol.tag != KItemGWSOL)
@@ -156,6 +155,7 @@ int main(int argc, const char *argv[])
 				
 				puts("Please enter ctrl + 'c' to quit...");
 			}
+			
 		}
 	}	
 	sleep(1);
