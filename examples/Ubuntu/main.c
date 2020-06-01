@@ -130,6 +130,13 @@ int main(int argc, const char *argv[])
 
 		if(n > 0)
 		{
+#if 0
+			for(int i = 0;i < n; i++)
+			{
+				printf("%X   ",buf[i]);
+			}
+		puts("end start");
+#else
 			for(i=0; i < n; i++)
 			{
 				packet_decode(buf[i]);
@@ -138,14 +145,15 @@ int main(int argc, const char *argv[])
 
 			if(receive_gwsol.tag != KItemGWSOL)
 			{
-				/* printf imu data packet */
+			//	 printf imu data packet 
 				dump_data_packet(&receive_imusol);
+				
 				puts("Please enter ctrl + 'c' to quit...");
 			}
  
 			else
 			{
-				/* printf gw data packet */
+			//	 printf gw data packet 
 				printf("        GW ID:  %-8d\n",receive_gwsol.gw_id);
 				for(i = 0; i < receive_gwsol.n; i++)
 				{ 
@@ -155,6 +163,7 @@ int main(int argc, const char *argv[])
 				
 				puts("Please enter ctrl + 'c' to quit...");
 			}
+#endif
 			
 		}
 	}	
@@ -168,6 +177,7 @@ void dump_data_packet(receive_imusol_packet_t *data)
 {
 	if(bitmap & BIT_VALID_ID)
 		printf("    Device ID:  %-8d\n",  data->id);
+	printf("Run times(ms):  %-8d\n",receive_imusol.times);
 	printf("   Frame Rate: %4dHz\n", frame_rate);
 	if(bitmap & BIT_VALID_ACC)
 		printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",  data->acc[0],  data->acc[1],  data->acc[2]);

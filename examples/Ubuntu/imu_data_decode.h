@@ -18,6 +18,7 @@ extern uint32_t frame_count;
 typedef struct receive_imusol_packet_t {
 	uint8_t tag;
 	uint8_t id;
+	uint32_t times;
 	float acc[3];
 	float gyr[3];
 	float mag[3]; 

@@ -96,14 +96,14 @@ static void on_data_received(packet_t *pkt)
 			break;
 		case kItemPressure:
 			offset += 5;
-			break;
+			break; 
 
 		case KItemIMUSOL:
 			bitmap = BIT_VALID_ALL;
 
 			receive_imusol.id =p[offset + 1];
-	
-			memcpy(receive_imusol.acc, p + 12 , sizeof(float) * 16);
+			memcpy(&receive_imusol.times, p + 8, sizeof(int)); 	
+			memcpy(receive_imusol.acc, p + 12, sizeof(float) * 16);
 
 			offset += 76;
 			break;
