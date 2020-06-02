@@ -7,13 +7,14 @@
 
 extern uint8_t bitmap;
 extern uint32_t frame_count;
-#define BIT_VALID_ID   (0x01)
-#define BIT_VALID_ACC  (0x02)
-#define BIT_VALID_GYR  (0x04)
-#define BIT_VALID_MAG  (0x08)
-#define BIT_VALID_EUL  (0x10)
-#define BIT_VALID_QUAT (0x20)
-#define BIT_VALID_ALL  (BIT_VALID_QUAT | BIT_VALID_EUL | BIT_VALID_MAG | BIT_VALID_GYR | BIT_VALID_ACC | BIT_VALID_ID)
+#define BIT_VALID_ID     (0x01)
+#define BIT_VALID_ACC    (0x02)
+#define BIT_VALID_GYR    (0x04)
+#define BIT_VALID_MAG    (0x08)
+#define BIT_VALID_EUL    (0x10)
+#define BIT_VALID_QUAT   (0x20)
+#define BIT_VALID_TIMES  (0x40)
+#define BIT_VALID_ALL  (BIT_VALID_QUAT | BIT_VALID_EUL | BIT_VALID_MAG | BIT_VALID_GYR | BIT_VALID_ACC | BIT_VALID_ID | BIT_VALID_TIMES)
 
 typedef struct receive_imusol_packet_t {
 	uint8_t tag;
