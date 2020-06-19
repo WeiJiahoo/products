@@ -10,7 +10,7 @@ static packet_t RxPkt; /* used for data receive */
 /*
  **采用结构体来保存数据
  **将标志位都集中到一个32位的变量上，用位来表示
- **在复制数据时，在用户程序中直接调用一个memcpu函数
+ **在复制数据时，在用户程序中直接调用一个memcpy函数
  **
  *
  *
@@ -37,10 +37,9 @@ static void on_data_received(packet_t *pkt)
 	int offset = 0;
 	uint8_t *p = pkt->buf;
 
-
 	if(pkt->type != 0xA5)
     {
-        return;
+		return;
     }
 
 	while(offset < pkt->payload_len)
@@ -48,7 +47,7 @@ static void on_data_received(packet_t *pkt)
 		if(offset == 0)
 		{
 			frame_count++;	
-   		    bitmap = 0;
+			bitmap = 0;
 		}
 		switch(p[offset])
 		{
@@ -125,7 +124,6 @@ static void on_data_received(packet_t *pkt)
 			break;
 		default:
 			offset++;
-
 		}
     }
 }
