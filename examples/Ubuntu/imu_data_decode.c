@@ -120,7 +120,7 @@ static void on_data_received(packet_t *pkt)
 		default:
 			offset++;
 		}
-    }
+	}
 }
 
 
