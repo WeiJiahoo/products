@@ -4,16 +4,11 @@
 #include "packet.h"
 #include "imu_data_decode.h"
 
-
-
 static packet_t RxPkt; /* used for data receive */
 /*
  **采用结构体来保存数据
  **将标志位都集中到一个32位的变量上，用位来表示
  **在复制数据时，在用户程序中直接调用一个memcpy函数
- **
- *
- *
  */
 
 uint8_t bitmap;
@@ -38,9 +33,9 @@ static void on_data_received(packet_t *pkt)
 	uint8_t *p = pkt->buf;
 
 	if(pkt->type != 0xA5)
-    {
+	{
 		return;
-    }
+	}
 
 	while(offset < pkt->payload_len)
 	{
