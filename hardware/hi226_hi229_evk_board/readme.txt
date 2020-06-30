@@ -1,1 +1,0 @@
-使用 Cadence 打开，没有Atium Designer 版本的源文件
