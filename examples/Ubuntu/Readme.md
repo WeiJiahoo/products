@@ -34,7 +34,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​		如果需要输出帧率超过100Hz，则需要需要修改main.c文件中的options.c_cflag参数，改为更高的波特率。
 
-![](.\img\5.png)
+![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/5.png)
 
 ​		如图，在第83行，将B115200修改为B460800或者是B921600。
 
@@ -48,7 +48,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​	执行成功后，会出现这个画面：
 
-![](.\img\3.png)
+![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/3.png)
 
 ​	这个画面上的数字会随着模块位置的改变而发生变化。
 
@@ -58,7 +58,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​	如果出现：
 
-![](.\img\4.png)
+![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/4.png)
 
 ​	表示未能找到串口，需要回到**《查找USB-UART设备》一节** 确认USB-UART设备已经被ubuntu识别。
 
