@@ -106,7 +106,7 @@ $ source devel/setup.bash
 
 ​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/catkin_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的sp.setBaudrate()函数的参数，改为更高的波特率。	
 
-![](.\img\1.png)
+![](./img/1.png)
 
 ​	如图所示：修改到合适的波特率和对应的串口名称。
 
