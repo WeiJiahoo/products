@@ -14,7 +14,7 @@
 
 ​	检查系统是否识别到USB-UART设备：
 
-​	1、Ubuntu桌面环境下，按ctrl + alt + t`打开命令行窗口
+​	1、Ubuntu桌面环境下，按`ctrl + alt + t`打开命令行窗口
 
 ​	2、输入 `ls /dev`  查看是挂载成功USB转串口设备
 
