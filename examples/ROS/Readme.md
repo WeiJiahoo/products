@@ -1,6 +1,6 @@
-# ROS例程
+# ROS串口例程
 
-​	本文档介绍了如何在Ubuntu平台上，用ROS来读取HI226/HI229的数据，本路径提供了c++语言例程代码，通过执行ROS命令，运行相应的节点，就可以看到打印到终端上的信息。
+​	本文档介绍如何在ROS下来读取HI226/HI229的数据，并提供了c++语言例程代码，通过执行ROS命令，运行相应的节点，就可以看到打印到终端上的信息。
 
 ​	测试环境：Ubuntu16.04   
 
@@ -10,25 +10,25 @@
 
 ## 查找USB-UART设备
 
-​	因为Ubuntu 系统自带CP210x的驱动，所以不用专门去安装相应串口驱动。将调试版连接到电脑上时，会自动识别设备。识别成功后，会在dev目录下出现一个对应的设备文件。
+​	Ubuntu 系统自带CP210x的驱动，默认不需要安装串口驱动。将调试版连接到电脑上时，会自动识别设备。识别成功后，会在dev目录下出现一个对应的设备文件。
 
 ​	检查系统是否识别到USB-UART设备：
 
-​	1、打开Ubuntu系统，按下 __ctrl + alt + t__ 打开命令行窗口
+​	1、Ubuntu桌面环境下，按ctrl + alt + t`打开命令行窗口
 
-​	2、在窗口上输入 `cd /dev`  切换到dev目录下，这个目录下，是一些设备文件。
+​	2、输入 `ls /dev`  查看是挂载成功USB转串口设备
 
-​	3、然后在dev目录下执行`ls` 这个命令是查看当前目录下都有哪些文件，然后按下 Enter 键，就会出现设备文件名称，在这些文件名称中，主要关心 **ttyUSB** 这个设备文件。后面数字代表USB设备号，由于Ubuntu USB设备号为从零开始依次累加，所以多个设备每次开机后设备号是不固定的，需要确定设备的设备号。下面用两张图片来描述:
+​	3、查看是否存在  ttyUSBx 这个设备文件。x表示USB设备号，由于Ubuntu USB设备号为从零开始依次累加，所以多个设备每次开机后设备号是不固定的，需要确定设备的设备号，没有插入HI226/HI229评估板时的dev设备列表：
 
-![](https://github.com/hipnuc/products/blob/master/examples/ROS/img/4.png)
+![](./img/4.png)
 
-​	上图为没有插入USB设备的情况，这个时候，dev目录下并没有名为 __ttyUSB__ 文件，插入USB线，连接调试板，然后再次执行`ls`：
+​	上图为没有插入USB设备的情况，这个时候，dev目录下并没有名为 __ttyUSB__ 文件，插入USB线，连接调试板，然后再次执行`ls /dev`：
 
 dev目录下多了几个文件名称, 如图：
 
-![](https://github.com/hipnuc/products/blob/master/examples/ROS/img/2.png)
+![](./img/5.png)
 
-​	**ttyUSB0** 文件就是调试版在ubuntu系统中生成的设备文件，对它进行读写，就可以完成串口通信。这个文件名称我们把它记下来。后面的数字是不固定的，有可能为 **ttyUSB1**  或 **ttyUSB2** 等。
+​	**ttyUSB0** 文件就是调试版在ubuntu系统中生成的设备文件，对它进行读写，就可以完成串口通信。设备文件名需要记住。后面的数字是不固定的，有可能为 ttyUSB1  或 ttyUSB2等。
 
 ## 安装serial软件包
 
@@ -65,7 +65,7 @@ declare -x ROS_ROOT="/opt/ros/indigo/share/ros"
 
 如果不正确，请先设置环境变量。
 
-接下来，就是创建一个工作空间，名为__catkin_ws__：
+创建一个工作空间，名为__catkin_ws__：
 
 ```shell
 $ mkdir -p ~/catkin_ws/src
@@ -73,7 +73,7 @@ $ cd ~/catkin_ws/src
 $ catkin_init_workspace
 ```
 
-进入工作空间，编译这个工作空间。
+进入工作空间，编译工程。
 
 ```shell
 $ cd ~/catkin_ws
@@ -94,21 +94,21 @@ $ source devel/setup.bash
 
 ## 编译serial_imu节点
 
-​	接下来，执行`cd ~/catkin_ws/src`命令，进入src目录，将本文档所在的目录下的serial_imu文件夹复制到src目录下，包括serial_imu文件夹下的文件。
+​	接下来，执行`cd ~/catkin_ws/src`命令，进入src目录，将本文档所在的目录下的serial_imu文件夹复制到src目录下。
 
 ​	然后回到catkin_ws目录下，执行`catkin_make`命令，编译成功后出现完成度100%的信息。
 
 ## 查看数据
 
-​	查看数据，就要运行相应的节点。
+​	运行相应的节点：
 
-​	在Ubuntu环境中，波特率支持到115200,460800,921600，本例程使用的是115200。
+​	在Ubuntu环境中，支持的波特率为115200, 460800, 921600，本例程使用的是115200。
 
 ​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/catkin_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的sp.setBaudrate()函数的参数，改为更高的波特率。	
 
 ![](./img/1.png)
 
-​	如图所示：修改到合适的波特率和对应的串口名称。
+​	如图所示：修改到合适的波特率和正确的串口设备名称。
 
 ​	修改完成后，在回到catkin_wa目录下，重新执行`catkin_make`命令，重新生成。
 
@@ -120,7 +120,7 @@ $ source devel/setup.bash
 
 ![](./img/2.png)
 
-## 执行的过程中，可能会出现的问题
+## FAQ
 
 ​	如果在执行`rosrun serial_imu serial_imu`时候，出现如下错误：
 
