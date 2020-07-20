@@ -36,8 +36,8 @@ dev目录下多了几个文件名称, 如图：
 
 ​	首先执行如下命令，下载安装serial软件包：
 
-```c
-sudo apt-get install ros-kinetic-serial
+```shell
+$ sudo apt-get install ros-kinetic-serial
 ```
 
 然后输入`roscd serial`命令，进入serial下载位置，如果安装成功，就会出现如下信息：
@@ -110,7 +110,7 @@ $ source devel/setup.bash
 
 ​	如图所示：修改到合适的波特率和正确的串口设备名称。
 
-​	修改完成后，在回到catkin_wa目录下，重新执行`catkin_make`命令，重新生成。
+​	修改完成后，在回到catkin_ws目录下，重新执行`catkin_make`命令，重新生成。
 
 ​	生成成功后，执行`roscore`命令。
 
@@ -133,7 +133,7 @@ $ source devel/setup.bash
 ​	执行`gedit ~/.bashrc`命令，打开一个文件，然后在这个文件的末尾加入ROS程序注册命令。
 
 ```shell
-source /home/linux/catkin_ws/devel/setup.bash
+$ source /home/linux/catkin_ws/devel/setup.bash
 ```
 
 ​	保存并退出。
@@ -141,7 +141,7 @@ source /home/linux/catkin_ws/devel/setup.bash
 ​	还有就是可能会遇到串口打开失败，权限不够。执行如下命令，申请权限。
 
 ```shell
-sudo chmod 777 /dev/ttyUSB0
+$ sudo chmod 777 /dev/ttyUSB0
 ```
 
 ​	然后开启一个终端，执行`rosrun serial_imu serial_imu`命令，执行成功。
