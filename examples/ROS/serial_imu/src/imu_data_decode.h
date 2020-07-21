@@ -5,9 +5,8 @@
 #include <stdbool.h>
 #define MAX_LENGTH 16
 
-extern uint32_t frame_count;
 extern uint8_t bitmap;
-
+extern uint32_t frame_count;
 #define BIT_VALID_ID     (0x01)
 #define BIT_VALID_ACC    (0x02)
 #define BIT_VALID_GYR    (0x04)
@@ -55,6 +54,6 @@ typedef enum
 
 int imu_data_decode_init(void);
 
-#endif
+#endif 
 
  
