@@ -14,10 +14,12 @@
 #ifdef __cplusplus 
 extern "C"{
 #endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include "packet.h"
 #include "imu_data_decode.h"
+
 int imu_data_decode_init(void);
 typedef void (*on_data_received_event)(packet_t *ptr);
 void packet_decode_init(packet_t *pkt, on_data_received_event rx_handler);
@@ -45,10 +47,16 @@ void timer(int sig)
 
 int main(int argc, char** argv)
 {
+	//初始化ROS。它允许ROS通过命令行进行名称重映射——目前，这不是重点。同样，在这里指定该节点的名称——必须唯一。这里的名称必须是一个base name，不能包含"/"
     ros::init(argc, argv, "serial_imu");
-    //创建句柄（虽然后面没用到这个句柄，但如果不创建，运行时进程会出错）
+    //创建句柄,这个句柄用于管理该进程使用的资源。
     ros::NodeHandle n;
 
+	//告诉节点管理器master, 将要在IMU_data topic上发布一个sensor_msgs::Imu的消息。
+	//这样master就会告诉所有订阅了IMU_data topic的节点，将要有数据发布。第二个参数是发布序列的大小。
+	//在这样的情况下，如果发布的消息太快，缓冲区中的消息在大于20个的时候就会开始丢弃先前发布的消息。
+	//NodeHandle::advertise() 返回一个 ros::Publisher对象,它有两个作用: 
+	//1) 它有一个publish()成员函数可以让你在topic上发布消息； 2) 如果消息类型不对,它会拒绝发布。
 	ros::Publisher IMU_pub = n.advertise<sensor_msgs::Imu>("IMU_data", 20);
 
     //创建一个serial类
@@ -62,12 +70,12 @@ int main(int argc, char** argv)
     //串口设置timeout
     sp.setTimeout(to);
 	
+	
 	imu_data_decode_init();
  	signal(SIGALRM,timer);
 
     try
     {
-        //打开串口
         sp.open();
     }
     catch(serial::IOException& e)
@@ -87,53 +95,61 @@ int main(int argc, char** argv)
     }
 	
 	alarm(1);
+	//ros::Rate对象可以允许你指定自循环的频率。它会追踪记录自上一次调用Rate::sleep()后时间的流逝，并休眠直到一个频率周期的时间。在这里，让它以500hz的频率运行。
     ros::Rate loop_rate(500);
 
     while(ros::ok())
     {
+		//roscpp会默认安装一个SIGINT句柄，它负责处理Ctrl + C键盘操作 --> 使得ros::ok()返回FALSE。
+		//如果下列条件之一发生，ros::ok()返回false：SIGINT接收到(Ctrl-C);被另一同名节点踢出ROS网络;ros::shutdown()被程序的另一部分调用;所有的ros::NodeHandles都已经被销毁.一旦ros::ok()返回false, 所有的ROS调用都会失效
         //获取缓冲区内的字节数r
-		size_t n = sp.available();
-        if(n!=0)
+		size_t num = sp.available();
+        if(num!=0)
         {
             uint8_t buffer[1024];
             //读出数据
-            n = sp.read(buffer, n);
-            if(n > 0)
+            num = sp.read(buffer, num);
+            if(num > 0)
 			{
-				for(int i = 0; i < n; i++)
+				for(int i = 0; i < num; i++)
 					packet_decode(buffer[i]);
 
 				sensor_msgs::Imu imu_data;
 				imu_data.header.stamp = ros::Time::now();
 				imu_data.header.frame_id = "base_link";
 
-				puts("\033c");
+//				puts("\033c");
  				if(receive_gwsol.tag != KItemGWSOL)
 				{
-					dump_data_packet(&receive_imusol);
+//					dump_data_packet(&receive_imusol);
 					imu_data.orientation.x = receive_imusol.quat[2];
 					imu_data.orientation.y = -receive_imusol.quat[1];
 					imu_data.orientation.z = -receive_imusol.quat[0];
 					imu_data.orientation.w = receive_imusol.quat[3];
 					IMU_pub.publish(imu_data);
-					puts("Pleaes enter ctrl + 'c' to quit....");
+//					puts("Pleaes enter ctrl + 'c' to quit....");
 				}
 				else
 				{
-					printf("       GW ID: %4d\n",receive_gwsol.gw_id);
+					printf("       GW ID: %4d\n", receive_gwsol.gw_id);
 					for(int i = 0; i < receive_gwsol.n; i++)
 					{
-						dump_data_packet(&receive_gwsol.receive_imusol[i]);
-						puts("");
+//						dump_data_packet(&receive_gwsol.receive_imusol[i]);
+						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[2];
+						imu_data.orientation.y = -receive_gwsol.receive_imusol[i].quat[1];
+						imu_data.orientation.z = -receive_gwsol.receive_imusol[i].quat[0];
+						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[3];
+						IMU_pub.publish(imu_data);
+//						puts("");
 					}
-					puts("Please enter ctrl + 'c' to quit...");
+//					puts("Please enter ctrl + 'c' to quit...");
 				}
 			}
         }
+		//这条语句是调用ros::Rate对象来休眠一段时间以使得发布频率为500hz。
         loop_rate.sleep();
     }
     
-	//关闭串口
 	sp.close();
  
 	return 0;
@@ -142,33 +158,24 @@ int main(int argc, char** argv)
 void dump_data_packet(receive_imusol_packet_t *data)
 {
 	if(bitmap & BIT_VALID_ID)
-	{
 		printf("     Devie ID:%6d\n",data->id);
-	}
+
 	if(bitmap & BIT_VALID_TIMES)
-	{
-		printf("    Run times:%d days %d:%d:%d:%d\n",data->times / 86400000, data->times / 3600000 % 24, data->times / 60000 % 60, data->times / 1000 % 60, data->times % 1000);
-	}
+		printf("    Run times: %d days  %d:%d:%d:%d\n",data->times / 86400000, data->times / 3600000 % 24, data->times / 60000 % 60, data->times / 1000 % 60, data->times % 1000);
+
 	printf("  Frame Rate:  %4dHz\r\n",frame_rate);
 	if(bitmap & BIT_VALID_ACC)
-	{
 		printf("       Acc(G):%8.3f %8.3f %8.3f\r\n", data->acc[0], data->acc[1], data->acc[2]);
-	}
-	if(bitmap & BIT_VALID_GYR)
-	{
-		printf("   Gyr(deg/s):%8.2f %8.2f %8.2f\r\n", data->gyr[0], data->gyr[1], data->gyr[2]);
-	}
-	if(bitmap & BIT_VALID_MAG)
-	{
-		printf("      Mag(uT):%8.2f %8.2f %8.2f\r\n", data->mag[0], data->mag[1], data->mag[2]);
-	}
-	if(bitmap & BIT_VALID_EUL)
-	{
-		printf("   Eul(R P Y):%8.2f %8.2f %8.2f\r\n", data->eul[0], data->eul[1], data->eul[2]);
-	}
-	if(bitmap & BIT_VALID_QUAT)
-	{
-		printf("Quat(W X Y Z):%8.3f %8.3f %8.3f %8.3f\r\n", data->quat[0], data->quat[1], data->quat[2], data->quat[3]);
 
-	}
+	if(bitmap & BIT_VALID_GYR)
+		printf("   Gyr(deg/s):%8.2f %8.2f %8.2f\r\n", data->gyr[0], data->gyr[1], data->gyr[2]);
+
+	if(bitmap & BIT_VALID_MAG)
+		printf("      Mag(uT):%8.2f %8.2f %8.2f\r\n", data->mag[0], data->mag[1], data->mag[2]);
+
+	if(bitmap & BIT_VALID_EUL)
+		printf("   Eul(R P Y):%8.2f %8.2f %8.2f\r\n", data->eul[0], data->eul[1], data->eul[2]);
+
+	if(bitmap & BIT_VALID_QUAT)
+		printf("Quat(W X Y Z):%8.3f %8.3f %8.3f %8.3f\r\n", data->quat[0], data->quat[1], data->quat[2], data->quat[3]);
 }
