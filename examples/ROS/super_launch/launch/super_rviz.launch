@@ -1,0 +1,5 @@
+<launch>
+	<node pkg="serial_imu" name="HI226" type="serial_imu" output="screen" />
+	<node pkg="rviz" name="rviz_hi226" type="rviz" />
+
+</launch>
