@@ -122,10 +122,16 @@ int main(int argc, char** argv)
  				if(receive_gwsol.tag != KItemGWSOL)
 				{
 //					dump_data_packet(&receive_imusol);
-					imu_data.orientation.x = receive_imusol.quat[2];
-					imu_data.orientation.y = -receive_imusol.quat[1];
-					imu_data.orientation.z = -receive_imusol.quat[0];
-					imu_data.orientation.w = receive_imusol.quat[3];
+					imu_data.orientation.x = receive_imusol.quat[1];
+					imu_data.orientation.y = receive_imusol.quat[2];
+					imu_data.orientation.z = receive_imusol.quat[3];
+					imu_data.orientation.w = receive_imusol.quat[0];
+					imu_data.angular_velocity.x = receive_imusol.gyr[0];
+					imu_data.angular_velocity.y = receive_imusol.gyr[1];
+					imu_data.angular_velocity.z = receive_imusol.gyr[2];
+					imu_data.linear_acceleration.x = receive_imusol.acc[0];
+					imu_data.linear_acceleration.y = receive_imusol.acc[1];
+					imu_data.linear_acceleration.z = receive_imusol.acc[2];
 					IMU_pub.publish(imu_data);
 //					puts("Pleaes enter ctrl + 'c' to quit....");
 				}
@@ -136,8 +142,8 @@ int main(int argc, char** argv)
 					{
 //						dump_data_packet(&receive_gwsol.receive_imusol[i]);
 						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[2];
-						imu_data.orientation.y = -receive_gwsol.receive_imusol[i].quat[1];
-						imu_data.orientation.z = -receive_gwsol.receive_imusol[i].quat[0];
+						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[1];
+						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[0];
 						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[3];
 						IMU_pub.publish(imu_data);
 //						puts("");

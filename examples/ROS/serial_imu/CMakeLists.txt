@@ -156,6 +156,9 @@ add_executable(serial_imu src/serial_imu.cpp src/imu_data_decode.c src/packet.c)
 add_definitions(-std=c99)
 target_link_libraries(serial_imu ${catkin_LIBRARIES})
 
+add_executable(imu_subscriber src/subscriber.cpp src/imu_data_decode.c src/packet.c)
+target_link_libraries(imu_subscriber ${catkin_LIBRARIES})
+
 #############
 ## Install ##
 #############
