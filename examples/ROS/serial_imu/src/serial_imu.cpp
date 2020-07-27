@@ -133,12 +133,12 @@ int main(int argc, char** argv)
 						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[1];
 						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[0];
 						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[3];
-						imu_data.angular_velocity.x = receive_gwsol.receive_imusol.gyr[0];
-						imu_data.angular_velocity.y = receive_gwsol.receive_imusol.gyr[1];
-						imu_data.angular_velocity.z = receive_gwsol.receive_imusol.gyr[2];
-						imu_data.linear_acceleration.x = receive_gwsol.receive_imusol.acc[0];
-						imu_data.linear_acceleration.y = receive_gwsol.receive_imusol.acc[1];
-						imu_data.linear_acceleration.z = receive_gwsol.receive_imusol.acc[2];
+						imu_data.angular_velocity.x = receive_gwsol.receive_imusol[i].gyr[0];
+						imu_data.angular_velocity.y = receive_gwsol.receive_imusol[i].gyr[1];
+						imu_data.angular_velocity.z = receive_gwsol.receive_imusol[i].gyr[2];
+						imu_data.linear_acceleration.x = receive_gwsol.receive_imusol[i].acc[0];
+						imu_data.linear_acceleration.y = receive_gwsol.receive_imusol[i].acc[1];
+						imu_data.linear_acceleration.z = receive_gwsol.receive_imusol[i].acc[2];
 						IMU_pub.publish(imu_data);
 						puts("");
 					}
