@@ -106,10 +106,10 @@ int main(int argc, char** argv)
 				imu_data.header.stamp = ros::Time::now();
 				imu_data.header.frame_id = "base_link";
 
-//				puts("\033c");
+				puts("\033c");
 				if(receive_gwsol.tag != KItemGWSOL)
 				{
-//					dump_data_packet(&receive_imusol);
+					dump_data_packet(&receive_imusol);
 					imu_data.orientation.x = receive_imusol.quat[1];
 					imu_data.orientation.y = receive_imusol.quat[2];
 					imu_data.orientation.z = receive_imusol.quat[3];
@@ -121,14 +121,14 @@ int main(int argc, char** argv)
 					imu_data.linear_acceleration.y = receive_imusol.acc[1];
 					imu_data.linear_acceleration.z = receive_imusol.acc[2];
 					IMU_pub.publish(imu_data);
-//					puts("Pleaes enter ctrl + 'c' to quit....");
+					puts("Pleaes enter ctrl + 'c' to quit....");
 				}
 				else
 				{
 					printf("       GW ID: %4d\n", receive_gwsol.gw_id);
 					for(int i = 0; i < receive_gwsol.n; i++)
 					{
-//						dump_data_packet(&receive_gwsol.receive_imusol[i]);
+						dump_data_packet(&receive_gwsol.receive_imusol[i]);
 						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[2];
 						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[1];
 						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[0];
@@ -140,9 +140,9 @@ int main(int argc, char** argv)
 						imu_data.linear_acceleration.y = receive_gwsol.receive_imusol.acc[1];
 						imu_data.linear_acceleration.z = receive_gwsol.receive_imusol.acc[2];
 						IMU_pub.publish(imu_data);
-//						puts("");
+						puts("");
 					}
-//					puts("Please enter ctrl + 'c' to quit...");
+					puts("Please enter ctrl + 'c' to quit...");
 				}
 			}
 		}
