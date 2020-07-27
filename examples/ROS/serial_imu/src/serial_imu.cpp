@@ -20,6 +20,9 @@ extern "C"{
 #include "packet.h"
 #include "imu_data_decode.h"
 
+#define IMU_SERIAL "/dev/ttyUSB0"
+#define BAUD 115200
+
 int imu_data_decode_init(void);
 typedef void (*on_data_received_event)(packet_t *ptr);
 void packet_decode_init(packet_t *pkt, on_data_received_event rx_handler);
@@ -56,9 +59,9 @@ int main(int argc, char** argv)
 
 	serial::Timeout to = serial::Timeout::simpleTimeout(100);
 
-	sp.setPort("/dev/ttyUSB0");
+	sp.setPort(IMU_SERIAL);
 
-	sp.setBaudrate(115200);
+	sp.setBaudrate(BAUD);
 
 	sp.setTimeout(to);
 	

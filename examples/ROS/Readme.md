@@ -98,27 +98,127 @@ $ source devel/setup.bash
 
 ​	然后回到catkin_ws目录下，执行`catkin_make`命令，编译成功后出现完成度100%的信息。
 
-## 查看数据
-
-​	运行相应的节点：
+## 修改配置
 
 ​	在Ubuntu环境中，支持的波特率为115200, 460800, 921600，本例程使用的是115200。
 
-​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/catkin_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的sp.setBaudrate()函数的参数，改为更高的波特率。	
+​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/catkin_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的宏定义，改为更高的波特率。	
 
-![](./img/1.png)
+```c
+#define IMU_SERIAL "/dev/ttyUSB0"
+#define BAUD 115200
+```
 
 ​	如图所示：修改到合适的波特率和正确的串口设备名称。
 
 ​	修改完成后，在回到catkin_ws目录下，重新执行`catkin_make`命令，重新生成。
 
-​	生成成功后，执行`roscore`命令。
+​	生成成功后，就可以执行相应的节点，来查IMU的数据。
+
+## 查看数据
+
+​    本例程提供了三种查看方式：第一种方式是显示所有的数据信息；第二种是ROS定义的话题方式；第三种是借助于rviz工具实现可视化，可以更直观的感受IMU的姿态。
+
+### 	第一种：自定义
+
+​	这种方式，是我们自己定义的一种的显示方式，把imu上传的所有的信息都打印到终端上，便于查看数据。
+
+​	打开一个终端，执行`roscore`命令。
 
 ​	然后重新打开一个终端，执行`rosrun serial_imu serial_imu`命令。
 
-​	执行成功后，就可以看到如下界面：
+​	执行成功后，就可以看到所有的信息：
 
-![](./img/2.png)
+```txt
+
+     Devie ID:     0
+    Run times: 0 days  3:26:10:468
+  Frame Rate:   100Hz
+       Acc(G):   0.933    0.317    0.248
+   Gyr(deg/s):   -0.02     0.30    -0.00
+      Mag(uT):    0.00     0.00     0.00
+   Eul(R P Y):   52.01   -66.63   -60.77
+Quat(W X Y Z):   0.770    0.066   -0.611   -0.172
+Pleaes enter ctrl + 'c' to quit....
+
+```
+
+### 	第二种：ROS Imu.msg
+
+​	打开一个终端，执行`cd ~/catkin_ws/src`命令，进入src目录，将本文档所在的目录下的super_launch文件夹复制到src目录下。
+
+​	执行`cd ~/catkin_ws`命令，回到工作空间，再执行`catkin_make`,进行编译launch文件。
+
+​	编译成功后，执行`roslaunch super_launch super_imu.launch`命令。
+
+​	执行成功后，就可以看到ROS定义的IMU话题消息：
+
+```txt
+[subscriber_HI226-2] killing on exit
+header: 
+  seq: 595
+  stamp: 
+    secs: 1595829903
+    nsecs: 680423746
+  frame_id: "base_link"
+orientation: 
+  x: 0.0663746222854
+  y: -0.611194491386
+  z: -0.17232863605
+  w: 0.769635260105
+orientation_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+angular_velocity: 
+  x: 0.0851199477911
+  y: 0.0470183677971
+  z: 0.00235567195341
+angular_velocity_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+linear_acceleration: 
+  x: 0.93323135376
+  y: 0.317857563496
+  z: 0.247811317444
+linear_acceleration_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+
+```
+
+### 	第三种：rviz可视化工具
+
+​	为了更形象的显示IMU姿态，可以下载rviz_imu_plugin插件并安装。
+
+​	打开一个终端，进入catkin_ws中，然后安装git.
+
+```shell
+sudo apt-get install git-core
+```
+
+​	然后把需要的imu工具下载到ros的工作空间中
+
+```shell
+git clone -b indigo https://github.com/ccny-ros-pkg/imu_tools.git
+```
+
+​	安装工具
+
+```shell
+rosdep install imu_tools
+```
+
+​	如果提示__#All required rosdeps installed successfully__，说明安装成功了。
+
+​	接下来执行`catkin_make`。
+
+​	执行成功后，执行`roslaunch super_launch super_rviz.launch`命令。
+
+​	执行成功后，就可以看到rviz工具已经打开了，这个时候我们还需要进行配置一下，订阅相应的话题消息，才能在rviz的世界中看到一个坐标轴随着IMU传感器的变化而变化。
+
+​	先点击左下角的Add标签，然后在弹出窗口中，选择__By display type__标签，查找__rviz_imu_plugin__；找到之后，选择它下面的__imu__标签，点击OK,
+
+​	这时，我们可以看到rviz的左侧的展示窗口中已经成功添加上了Imu的标签。
+
+​	接下来在__Global Options__下的__Fixed Frame__中，添写__base_link__。
+
+​	然后在__Imu__下的__Topic__中，添写__/IMU_data__。
+
+​	这时，去晃动imu传感器，可以看到rviz世界中的坐标轴已经随着imu传感器的晃动发生了晃动。
 
 ## FAQ
 
