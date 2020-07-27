@@ -47,27 +47,19 @@ void timer(int sig)
 
 int main(int argc, char** argv)
 {
-	//初始化ROS。它允许ROS通过命令行进行名称重映射——目前，这不是重点。同样，在这里指定该节点的名称——必须唯一。这里的名称必须是一个base name，不能包含"/"
-    ros::init(argc, argv, "serial_imu");
-    //创建句柄,这个句柄用于管理该进程使用的资源。
-    ros::NodeHandle n;
+	ros::init(argc, argv, "serial_imu");
+	ros::NodeHandle n;
 
-	//告诉节点管理器master, 将要在IMU_data topic上发布一个sensor_msgs::Imu的消息。
-	//这样master就会告诉所有订阅了IMU_data topic的节点，将要有数据发布。第二个参数是发布序列的大小。
-	//在这样的情况下，如果发布的消息太快，缓冲区中的消息在大于20个的时候就会开始丢弃先前发布的消息。
-	//NodeHandle::advertise() 返回一个 ros::Publisher对象,它有两个作用: 
-	//1) 它有一个publish()成员函数可以让你在topic上发布消息； 2) 如果消息类型不对,它会拒绝发布。
 	ros::Publisher IMU_pub = n.advertise<sensor_msgs::Imu>("IMU_data", 20);
 
-    //创建一个serial类
     serial::Serial sp;
-    //创建timeout
+
     serial::Timeout to = serial::Timeout::simpleTimeout(100);
-    //设置要打开的串口名称
+
     sp.setPort("/dev/ttyUSB0");
-    //设置串口通信的波特率
+
     sp.setBaudrate(115200);
-    //串口设置timeout
+
     sp.setTimeout(to);
 	
 	
@@ -84,7 +76,6 @@ int main(int argc, char** argv)
         return -1;
     }
     
-    //判断串口是否打开成功
     if(sp.isOpen())
     {
         ROS_INFO_STREAM("/dev/ttyUSB0 is opened.");
@@ -95,19 +86,16 @@ int main(int argc, char** argv)
     }
 	
 	alarm(1);
-	//ros::Rate对象可以允许你指定自循环的频率。它会追踪记录自上一次调用Rate::sleep()后时间的流逝，并休眠直到一个频率周期的时间。在这里，让它以500hz的频率运行。
+	
     ros::Rate loop_rate(500);
 
     while(ros::ok())
     {
-		//roscpp会默认安装一个SIGINT句柄，它负责处理Ctrl + C键盘操作 --> 使得ros::ok()返回FALSE。
-		//如果下列条件之一发生，ros::ok()返回false：SIGINT接收到(Ctrl-C);被另一同名节点踢出ROS网络;ros::shutdown()被程序的另一部分调用;所有的ros::NodeHandles都已经被销毁.一旦ros::ok()返回false, 所有的ROS调用都会失效
-        //获取缓冲区内的字节数r
 		size_t num = sp.available();
         if(num!=0)
         {
             uint8_t buffer[1024];
-            //读出数据
+			
             num = sp.read(buffer, num);
             if(num > 0)
 			{
@@ -152,7 +140,6 @@ int main(int argc, char** argv)
 				}
 			}
         }
-		//这条语句是调用ros::Rate对象来休眠一段时间以使得发布频率为500hz。
         loop_rate.sleep();
     }
     
