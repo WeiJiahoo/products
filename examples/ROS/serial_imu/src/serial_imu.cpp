@@ -52,62 +52,62 @@ int main(int argc, char** argv)
 
 	ros::Publisher IMU_pub = n.advertise<sensor_msgs::Imu>("IMU_data", 20);
 
-    serial::Serial sp;
+	serial::Serial sp;
 
-    serial::Timeout to = serial::Timeout::simpleTimeout(100);
+	serial::Timeout to = serial::Timeout::simpleTimeout(100);
 
-    sp.setPort("/dev/ttyUSB0");
+	sp.setPort("/dev/ttyUSB0");
 
-    sp.setBaudrate(115200);
+	sp.setBaudrate(115200);
 
-    sp.setTimeout(to);
+	sp.setTimeout(to);
 	
 	
 	imu_data_decode_init();
- 	signal(SIGALRM,timer);
+	signal(SIGALRM,timer);
 
-    try
-    {
-        sp.open();
-    }
-    catch(serial::IOException& e)
-    {
-        ROS_ERROR_STREAM("Unable to open port.");
-        return -1;
-    }
+	try
+	{
+		sp.open();
+	}
+	catch(serial::IOException& e)
+	{
+		ROS_ERROR_STREAM("Unable to open port.");
+		return -1;
+	}
     
-    if(sp.isOpen())
-    {
-        ROS_INFO_STREAM("/dev/ttyUSB0 is opened.");
-    }
-    else
-    {
-        return -1;
-    }
+	if(sp.isOpen())
+	{
+		ROS_INFO_STREAM("/dev/ttyUSB0 is opened.");
+	}
+	else
+	{
+		return -1;
+	}
 	
 	alarm(1);
 	
-    ros::Rate loop_rate(500);
+	ros::Rate loop_rate(500);
 
-    while(ros::ok())
-    {
+	while(ros::ok())
+	{
 		size_t num = sp.available();
-        if(num!=0)
-        {
-            uint8_t buffer[1024];
-			
-            num = sp.read(buffer, num);
-            if(num > 0)
+		if(num!=0)
+		{
+			uint8_t buffer[1024];
+
+			num = sp.read(buffer, num);
+			if(num > 0)
 			{
 				for(int i = 0; i < num; i++)
-					packet_decode(buffer[i]);
+				packet_decode(buffer[i]);
 
 				sensor_msgs::Imu imu_data;
 				imu_data.header.stamp = ros::Time::now();
 				imu_data.header.frame_id = "base_link";
 
 //				puts("\033c");
- 				if(receive_gwsol.tag != KItemGWSOL)
+				if(receive_gwsol.tag != KItemGWSOL)
 				{
 //					dump_data_packet(&receive_imusol);
 					imu_data.orientation.x = receive_imusol.quat[1];
@@ -133,15 +133,21 @@ int main(int argc, char** argv)
 						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[1];
 						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[0];
 						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[3];
+						imu_data.angular_velocity.x = receive_gwsol.receive_imusol.gyr[0];
+						imu_data.angular_velocity.y = receive_gwsol.receive_imusol.gyr[1];
+						imu_data.angular_velocity.z = receive_gwsol.receive_imusol.gyr[2];
+						imu_data.linear_acceleration.x = receive_gwsol.receive_imusol.acc[0];
+						imu_data.linear_acceleration.y = receive_gwsol.receive_imusol.acc[1];
+						imu_data.linear_acceleration.z = receive_gwsol.receive_imusol.acc[2];
 						IMU_pub.publish(imu_data);
 //						puts("");
 					}
 //					puts("Please enter ctrl + 'c' to quit...");
 				}
 			}
-        }
-        loop_rate.sleep();
-    }
+		}
+		loop_rate.sleep();
+	}
     
 	sp.close();
  
