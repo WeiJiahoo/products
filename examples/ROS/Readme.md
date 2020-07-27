@@ -180,33 +180,23 @@ linear_acceleration_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 ```
 
-### 	方法2：rviz可视化
+### 	方法3：rviz可视化
 
 ​	为了更形象的显示IMU姿态，可以下载rviz_imu_plugin插件并安装。
 
-​	打开一个终端，进入catkin_ws中，然后安装git.
-
-```shell
-sudo apt-get install git-core
-```
-
-​	然后把需要的imu工具下载到ros的工作空间中
+​	可以从这里下载rviz的工具：
 
 ```shell
 git clone -b indigo https://github.com/ccny-ros-pkg/imu_tools.git
 ```
 
-​	安装工具
+​	安装好之后，执行`catkin_make`。
 
-```shell
-rosdep install imu_tools
-```
+​	执行成功后，然后，还需要在windows系统下进行配置模块，让它输出四元数。
 
-​	如果提示__#All required rosdeps installed successfully__，说明安装成功了。
+​	使用我们的上位机，进行配置。先把模块连接到PC机上。然后使用Uranus工具进行__连接__对应的com口，点击__工具__  --->  __配置模块__，在协议配置区域，可以选择老协议中单独勾选__四元数__，或者是选择新协议的__IMU数据集合__。勾选好之后，点击__写入配置__，接收区最后显示__ok__，说明配置成功。在关闭配置窗口上，看一下数据显示区域，最后确认一下，四元数是否正确输出。
 
-​	接下来执行`catkin_make`。
-
-​	执行成功后，执行`roslaunch super_launch super_rviz.launch`命令。
+​	在配置好模块后，执行`roslaunch super_launch super_rviz.launch`命令。
 
 ​	执行成功后，就可以看到rviz工具已经打开了，这个时候我们还需要进行配置一下，订阅相应的话题消息，才能在rviz的世界中看到一个坐标轴随着IMU传感器的变化而变化。
 
