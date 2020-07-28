@@ -20,8 +20,10 @@ extern "C"{
 #include "packet.h"
 #include "imu_data_decode.h"
 
-#define IMU_SERIAL "dev/ttyUSB0"
-#define BAUD 115200
+#define IMU_SERIAL   "/dev/ttyUSB0"
+#define BAUD         (115200)
+#define GRA_ACC      (9.8)
+#define DEG_TO_RAD   (0.01745329)
 
 int imu_data_decode_init(void);
 typedef void (*on_data_received_event)(packet_t *ptr);
@@ -31,6 +33,7 @@ uint32_t packet_decode(uint8_t);
 #ifdef __cplusplus
 }
 #endif
+void publish_imu_data(receive_imusol_packet_t *data, sensor_msgs::Imu *imu_data);
 
 void dump_data_packet(receive_imusol_packet_t *data);
 
@@ -91,6 +94,7 @@ int main(int argc, char** argv)
 	alarm(1);
 	
 	ros::Rate loop_rate(500);
+	sensor_msgs::Imu imu_data;
 
 	while(ros::ok())
 	{
@@ -103,9 +107,8 @@ int main(int argc, char** argv)
 			if(num > 0)
 			{
 				for(int i = 0; i < num; i++)
-				packet_decode(buffer[i]);
+					packet_decode(buffer[i]);
 
-				sensor_msgs::Imu imu_data;
 				imu_data.header.stamp = ros::Time::now();
 				imu_data.header.frame_id = "base_link";
 
@@ -113,16 +116,7 @@ int main(int argc, char** argv)
 				if(receive_gwsol.tag != KItemGWSOL)
 				{
 					dump_data_packet(&receive_imusol);
-					imu_data.orientation.x = receive_imusol.quat[1];
-					imu_data.orientation.y = receive_imusol.quat[2];
-					imu_data.orientation.z = receive_imusol.quat[3];
-					imu_data.orientation.w = receive_imusol.quat[0];
-					imu_data.angular_velocity.x = receive_imusol.gyr[0];
-					imu_data.angular_velocity.y = receive_imusol.gyr[1];
-					imu_data.angular_velocity.z = receive_imusol.gyr[2];
-					imu_data.linear_acceleration.x = receive_imusol.acc[0];
-					imu_data.linear_acceleration.y = receive_imusol.acc[1];
-					imu_data.linear_acceleration.z = receive_imusol.acc[2];
+					publish_imu_data(&receive_imusol, &imu_data);
 					IMU_pub.publish(imu_data);
 					puts("Pleaes enter ctrl + 'c' to quit....");
 				}
@@ -132,16 +126,7 @@ int main(int argc, char** argv)
 					for(int i = 0; i < receive_gwsol.n; i++)
 					{
 						dump_data_packet(&receive_gwsol.receive_imusol[i]);
-						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[1];
-						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[2];
-						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[3];
-						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[0];
-						imu_data.angular_velocity.x = receive_gwsol.receive_imusol[i].gyr[0];
-						imu_data.angular_velocity.y = receive_gwsol.receive_imusol[i].gyr[1];
-						imu_data.angular_velocity.z = receive_gwsol.receive_imusol[i].gyr[2];
-						imu_data.linear_acceleration.x = receive_gwsol.receive_imusol[i].acc[0];
-						imu_data.linear_acceleration.y = receive_gwsol.receive_imusol[i].acc[1];
-						imu_data.linear_acceleration.z = receive_gwsol.receive_imusol[i].acc[2];
+						publish_imu_data(&receive_gwsol.receive_imusol[i], &imu_data);
 						IMU_pub.publish(imu_data);
 						puts("");
 					}
@@ -180,4 +165,18 @@ void dump_data_packet(receive_imusol_packet_t *data)
 
 	if(bitmap & BIT_VALID_QUAT)
 		printf("Quat(W X Y Z):%8.3f %8.3f %8.3f %8.3f\r\n", data->quat[0], data->quat[1], data->quat[2], data->quat[3]);
+}
+
+void publish_imu_data(receive_imusol_packet_t *data, sensor_msgs::Imu *imu_data)
+{	
+	imu_data->orientation.x = data->quat[1];
+	imu_data->orientation.y = data->quat[2];
+	imu_data->orientation.z = data->quat[3];
+	imu_data->orientation.w = data->quat[0];
+	imu_data->angular_velocity.x = data->gyr[0] * DEG_TO_RAD;
+	imu_data->angular_velocity.y = data->gyr[1] * DEG_TO_RAD;
+	imu_data->angular_velocity.z = data->gyr[2] * DEG_TO_RAD;
+	imu_data->linear_acceleration.x = data->acc[0] * GRA_ACC;
+	imu_data->linear_acceleration.y = data->acc[1] * GRA_ACC;
+	imu_data->linear_acceleration.z = data->acc[2] * GRA_ACC;
 }
