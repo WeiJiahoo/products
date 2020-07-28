@@ -1,0 +1,8 @@
+prefix=/home/linux/serial_imu_ws/install
+
+Name: super_launch
+Description: Description of super_launch
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

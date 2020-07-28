@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/linux/serial_imu_ws/src/serial_imu/src/imu_data_decode.c
+string.h
+-
+stdio.h
+-
+packet.h
+/home/linux/serial_imu_ws/src/serial_imu/src/packet.h
+imu_data_decode.h
+/home/linux/serial_imu_ws/src/serial_imu/src/imu_data_decode.h
+
+/home/linux/serial_imu_ws/src/serial_imu/src/imu_data_decode.h
+stdint.h
+-
+stdbool.h
+-
+
+/home/linux/serial_imu_ws/src/serial_imu/src/packet.c
+string.h
+-
+stdio.h
+-
+packet.h
+/home/linux/serial_imu_ws/src/serial_imu/src/packet.h
+
+/home/linux/serial_imu_ws/src/serial_imu/src/packet.h
+stdint.h
+-
+stdbool.h
+-
+
