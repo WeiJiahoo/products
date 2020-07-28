@@ -5,3 +5,5 @@ settings
 rel_*
 rel.py
 find_new_firwamre.py
+examples/ROS/serial_imu_ws/build/
+examples/ROS/serial_imu_ws/devel/

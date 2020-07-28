@@ -4,7 +4,7 @@
 #include "packet.h"
  
 /************************************************
- ALIENTEK战舰STM32开发板实验4
+ ALIENTEK战舰STM32开发板实验
  串口实验 
  技术支持：www.openedv.com
  淘宝店铺：http://eboard.taobao.com 
@@ -51,7 +51,7 @@ int main(void)
 			{
 				/* printf imu data packet */
 				dump_data_packet(&receive_imusol);
-                putchar(10);
+				putchar(10);
 			}
 			else
 			{
@@ -63,33 +63,33 @@ int main(void)
 					puts("");
 				}
 			}
-        }
+		}
 	}	 
 }
 
 /* 200ms interrupt */
 void SysTick_Handler(void)
 {
-    static uint32_t div;    
-    if(div == 5)
-    {
-        div = 0;
-        frame_rate = frame_count;
-        frame_count = 0;
-        usart1_output_flag = 1;
-    }
+	static uint32_t div;    
+	if(div == 5)
+	{
+		div = 0;
+		frame_rate = frame_count;
+		frame_count = 0;
+		usart1_output_flag = 1;
+	}
     
-    div++;
+	div++;
 }
 
 /* serial usart2 interrupt functional */
 void USART2_IRQHandler(void)                	            //串口2中断服务程序
 {
-    uint8_t ch;
+	uint8_t ch;
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)   //接收中断 
 		ch = USART_ReceiveData(USART2);	                    //读取接收到的数据
 
-    packet_decode(ch);                                      //解析数据
+	packet_decode(ch);                                      //解析数据
 } 
 
 /* SysTick initialization */
