@@ -1,8 +1,0 @@
-prefix=/home/linux/serial_imu_ws/install
-
-Name: serial_imu
-Description: Description of serial_imu
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

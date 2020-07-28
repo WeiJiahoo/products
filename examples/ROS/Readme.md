@@ -46,63 +46,19 @@ $ sudo apt-get install ros-kinetic-serial
 $:/opt/ros/kinetic/share/serial
 ```
 
-## 创建工作空间
+## 编译serial_imu_ws工作空间
 
-先输入命令`export | grep ROS`确定环境变量是否设置正确。
+​	接下来，打开一个终端，将本文档所在的目录下的serial_imu_ws文件夹复制到home目录下所属用户中。
 
-若出现如下信息，说明是正确的：
+​	然后进入serial_imu_ws目录下，执行`catkin_make`命令，编译成功后出现完成度100%的信息。
 
-```shell
-declare -x ROSLISP_PACKAGE_DIRECTORIES=""
-declare -x ROS_DISTRO="indigo"
-declare -x ROS_ETC_DIR="/opt/ros/indigo/etc/ros"
-declare -x ROS_MASTER_URI="http://localhost:11311"
-declare -x ROS_PACKAGE_PATH="/opt/ros/indigo/share:/opt/ros/indigo/stacks"
-declare -x ROS_ROOT="/opt/ros/indigo/share/ros"
-```
-
-如果已经有创建好的工作空间，在__ROSLISP_PACKAGE_DIRECTORIES__后边会跟着工作空间的路径。
-
-如果不正确，请先设置环境变量。
-
-创建一个工作空间，名为__catkin_ws__：
-
-```shell
-$ mkdir -p ~/catkin_ws/src
-$ cd ~/catkin_ws/src
-$ catkin_init_workspace
-```
-
-进入工作空间，编译工程。
-
-```shell
-$ cd ~/catkin_ws
-$ catkin_make
-```
-
-可以看到build和devel两个文件夹，和src并列。
-
-在devel文件夹中，有一个setup.*sh文件，通过source命令激活这些文件中任何一个文件都会将这个工作空间覆盖到环境中：
-
-```shell
-$ source devel/setup.bash
-```
-
-检查：输入`echo $ROS_PACKAGE_PATH`命令，确认工作空间的路径是否设置正确。
-
-如果出现  __/opt/ros/kinetic/share__  ，说明设置正确。
-
-## 编译serial_imu节点
-
-​	接下来，执行`cd ~/catkin_ws/src`命令，进入src目录，将本文档所在的目录下的serial_imu文件夹复制到src目录下。
-
-​	然后回到catkin_ws目录下，执行`catkin_make`命令，编译成功后出现完成度100%的信息。
+​	这个文件夹是我们做好的一个ROS工作空间，用户只需要复制到相应的目录下，编译通过后，就可以使用相应的节点。
 
 ## 修改配置
 
 ​	在Ubuntu环境中，支持的波特率为115200, 460800, 921600，本例程使用的是115200。
 
-​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/catkin_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的宏定义，改为更高的波特率。	
+​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/serial_imu_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的宏定义，改为更高的波特率。	
 
 ```c
 #define IMU_SERIAL "/dev/ttyUSB0"
@@ -111,7 +67,7 @@ $ source devel/setup.bash
 
 ​	如图所示：修改到合适的波特率和正确的串口设备名称。
 
-​	修改完成后，在回到catkin_ws目录下，重新执行`catkin_make`命令，重新生成。
+​	修改完成后，在回到serial_imu_ws目录下，重新执行`catkin_make`命令，重新生成。
 
 ​	生成成功后，就可以执行相应的节点，来查IMU的数据。
 
@@ -123,9 +79,9 @@ $ source devel/setup.bash
 
 ​	这种方式，是我们自己定义的一种的显示方式，把imu上传的所有的信息都打印到终端上，便于查看数据。
 
-​	打开一个终端，执行`roscore`命令。
+​	打开一个终端，进入serial_imu_ws目录，执行`roscore`命令。
 
-​	然后重新打开一个终端，执行`rosrun serial_imu serial_imu`命令。
+​	然后重新打开一个终端，进入serial_imu_ws目录，执行`rosrun serial_imu serial_imu`命令。
 
 ​	执行成功后，就可以看到所有的信息：
 
@@ -145,11 +101,13 @@ Pleaes enter ctrl + 'c' to quit....
 
 ### 	方法2：输出ROS标准 Imu.msg
 
-​	打开一个终端，执行`cd ~/catkin_ws/src`命令，进入src目录，将本文档所在的目录下的super_launch文件夹复制到src目录下。
+​	打开一个终端，执行`cd ~/serial_imu_ws/src`命令，进入src目录，将本文档所在的目录下的super_launch文件夹复制到src目录下。
 
-​	执行`cd ~/catkin_ws`命令，回到工作空间，再执行`catkin_make`,进行编译launch文件。
+​	执行`cd ~/serial_imu_ws`命令，回到工作空间，再执行`catkin_make`,进行编译launch文件。
 
-​	编译成功后，执行`roslaunch super_launch super_imu.launch`命令。
+​	编译成功后，还需要在windows系统下进行配置模块，让它输出四元数。
+
+​	使用我们的上位机，进行配置。先把模块连接到PC机上。然后使用Uranus工具进行__连接__对应的com口，点击__工具__  --->  __配置模块__，在协议配置区域，可以选择老协议中单独勾选__四元数__，或者是选择新协议的__IMU数据集合__。勾选好之后，点击__写入配置__，接收区最后显示__ok__，说明配置成功。在关闭配置窗口上，看一下数据显示区域，最后确认一下，四元数是否正确输出。执行`roslaunch super_launch super_imu.launch`命令。
 
 ​	执行成功后，就可以看到ROS定义的IMU话题消息：
 
@@ -190,13 +148,11 @@ linear_acceleration_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 git clone -b indigo https://github.com/ccny-ros-pkg/imu_tools.git
 ```
 
-​	安装好之后，执行`catkin_make`。
+​	安装好之后，执行`catkin_make`。	
 
-​	执行成功后，然后，还需要在windows系统下进行配置模块，让它输出四元数。
+​	同样的，采用这个方法，依然需要配置HI226模块输出四元数。具体配置方式，查看方法2进行配置。
 
-​	使用我们的上位机，进行配置。先把模块连接到PC机上。然后使用Uranus工具进行__连接__对应的com口，点击__工具__  --->  __配置模块__，在协议配置区域，可以选择老协议中单独勾选__四元数__，或者是选择新协议的__IMU数据集合__。勾选好之后，点击__写入配置__，接收区最后显示__ok__，说明配置成功。在关闭配置窗口上，看一下数据显示区域，最后确认一下，四元数是否正确输出。
-
-​	在配置好模块后，执行`roslaunch super_launch super_rviz.launch`命令。
+​	进入serial_imu_ws，执行`roslaunch super_launch super_rviz.launch`命令。
 
 ​	执行成功后，就可以看到rviz工具已经打开了，这个时候我们还需要进行配置一下，订阅相应的话题消息，才能在rviz的世界中看到一个坐标轴随着IMU传感器的变化而变化。
 
@@ -216,14 +172,14 @@ git clone -b indigo https://github.com/ccny-ros-pkg/imu_tools.git
 
 ![](./img/3.png)
 
-​	这是由于没有配置环境的原因导致的，解决办法就是在当前终端执行`source ~/catkin_ws/devel/setup.bash`命令。
+​	这是由于没有配置环境的原因导致的，解决办法就是在当前终端执行`source ~/serial_imu_ws/devel/setup.bash`命令。
 
 ​	但是这个办法并不能一次性解决，每次开启一个终端，运行新节点都需要为该终端设置环境变量。所以按照如下方式，可以不用这么麻烦：
 
 ​	执行`gedit ~/.bashrc`命令，打开一个文件，然后在这个文件的末尾加入ROS程序注册命令。
 
 ```shell
-$ source /home/linux/catkin_ws/devel/setup.bash
+$ source /home/linux/serial_imu_ws/devel/setup.bash
 ```
 
 ​	保存并退出。
