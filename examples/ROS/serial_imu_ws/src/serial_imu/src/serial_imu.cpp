@@ -132,10 +132,10 @@ int main(int argc, char** argv)
 					for(int i = 0; i < receive_gwsol.n; i++)
 					{
 						dump_data_packet(&receive_gwsol.receive_imusol[i]);
-						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[2];
-						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[1];
-						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[0];
-						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[3];
+						imu_data.orientation.x = receive_gwsol.receive_imusol[i].quat[1];
+						imu_data.orientation.y = receive_gwsol.receive_imusol[i].quat[2];
+						imu_data.orientation.z = receive_gwsol.receive_imusol[i].quat[3];
+						imu_data.orientation.w = receive_gwsol.receive_imusol[i].quat[0];
 						imu_data.angular_velocity.x = receive_gwsol.receive_imusol[i].gyr[0];
 						imu_data.angular_velocity.y = receive_gwsol.receive_imusol[i].gyr[1];
 						imu_data.angular_velocity.z = receive_gwsol.receive_imusol[i].gyr[2];
