@@ -54,31 +54,17 @@ $:/opt/ros/kinetic/share/serial
 
 ## 4. 修改串口波特率和设备号
 
-1. 在Ubuntu环境中，支持的波特率为115200, 460800, 921600。本例程使用的默认波特率是115200，默认打开的串口名称是/dev/ttyUSB0
+1. 在Ubuntu环境中，支持的波特率为115200, 460800, 921600。本例程使用的默认波特率是115200，默认打开的串口名称是/dev/ttyUSB0。	
 
-<<<<<<< HEAD
-​	在Ubuntu环境中，支持的波特率为115200, 460800, 921600。
-
-​	本例程使用的波特率是115200，打开的串口名称是/dev/ttyUSB0，默认的输出频率为100Hz。如果您需要更高的输出频率，请执行`cd ~/serial_imu_ws/src/serial_imu/src`命令，进入src目录，打开serial_imu.cpp文件，修改serial_imu.cpp文件中的宏定义，改为更高的波特率。	
-=======
 2. 如果您需要更高的输出频率，请编辑serial_imu.cpp文件，修改serial_imu.cpp文件中的宏定义，改为其他波特率。	
->>>>>>> 7c616e8... [example:ROS] update readme.md
-
 ```c
 #define IMU_SERIAL "/dev/ttyUSB0"
 #define BAUD 115200
 ```
 
-<<<<<<< HEAD
-​	如上所示：修改到合适的波特率和正确的串口设备名称。
-
-​	修改完成后，保存退出，再回到serial_imu_ws目录下，重新执行`catkin_make`命令，重新生成。
-=======
 注意修改后需要回到serial_imu_ws目录下，重新执行catkin_make命令
 
 ## 5. 显示数据
->>>>>>> 7c616e8... [example:ROS] update readme.md
-
 本例程提供了三种查看数据方式：
 
 1. 第一种方式是显示所有的数据信息，通过printf把imu上传的所有的信息都打印到终端上，便于查看数据。
@@ -121,17 +107,8 @@ Pleaes enter ctrl + 'c' to quit....
 
 ### 	5.2：输出ROS标准 Imu.msg
 
-<<<<<<< HEAD
-​	编译成功后，还需要在windows系统下进行配置模块，让它输出ROS标准的 __Imu__ 数据。
-
-​	使用我们的上位机，进行配置。先把模块连接到PC机上。然后使用Uranus工具进行 __连接__ 对应的com口，点击 __工具__  --->  __配置模块__，在协议配置区域，可以在老协议中分别勾选 __加速度__ ， __角速度__ ,  __四元数__ ，或者是勾选新协议的 __IMU数据集合__ 。勾选好之后，点击 __写入配置__ ，接收区最后显示 __ok__ ，说明配置成功。在关闭配置窗口之后，看一下数据显示区域，最后确认一下，加速度、角速度、四元数是否正确输出。执行`roslaunch imu_launch imu_msg.launch`命令。
-
-​	执行成功后，就可以看到ROS定义的IMU话题消息：
-=======
 1. 在windows系统下进行配置模块，使能四元数输出。
-2. 使用Window下 Uranus上位机进行配置：先把模块连接到PC机上。然后使用Uranus工具进行 连接对应的com口，点击 __工具__  --->  __配置模块__，在协议配置区域，可以选择老协议中单独勾选 __四元数__ ，或者是选择新协议的 __IMU数据集合__ 。勾选好之后，点击 __写入配置__ ，接收区最后显示 __ok__ ，说明配置成功。在关闭配置窗口上，看一下数据显示区域，最后确认一下，四元数是否正确输出。执行`roslaunch imu_launch imu_msg.launch`命令。执行成功后，就可以看到ROS定义的IMU话题消息：
->>>>>>> 7c616e8... [example:ROS] update readme.md
-
+2. 使用Window下 Uranus上位机进行配置：先把模块连接到PC机上。然后使用Uranus工具进行 连接对应的com口，点击 __工具__  --->  __配置模块__，在协议配置区域，可以选择老协议中单独勾选 __加速度__ 、__角速度__ 、 __四元数__ ，或者是选择新协议的 __IMU数据集合__ 。勾选好之后，点击 __写入配置__ ，接收区最后显示 __ok__ ，说明配置成功。在关闭配置窗口上，看一下数据显示区域，最后确认一下，加速度、角速度、四元数是否正确输出。执行`roslaunch imu_launch imu_msg.launch`命令。执行成功后，就可以看到ROS定义的IMU话题消息：
 ```txt
 header: 
   seq: 595
@@ -164,39 +141,17 @@ linear_acceleration_covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 2. 同上节，使能模块四元数输出
 3. 进入serial_imu_ws，执行`roslaunch imu_launch imu_rviz.launch`命令，执行成功后，rviz工具被打开。
 4. 先点击左下角的Add标签，然后在弹出窗口中，选择 By display type标签，查找rviz_imu_plugin；找到之后，选择它下面的imu标签，点击OK, 这时，我们可以看到rviz的左侧的展示窗口中已经成功添加上了Imu的标签。在FixedFrame中填入**base_link** 。topic中添加 **/IMU_data**。这时，可以看到坐标系随传感器改变而改变。
-
-<<<<<<< HEAD
-​	可以从这里下载rviz的工具：
+5. ​	可以从这里下载rviz的工具：
 
 ```shell
 git clone -b indigo https://github.com/ccny-ros-pkg/imu_tools.git
 ```
 
-​	这个工具要下载到 __serial_imu_ws/src__ 目录下，安装好之后，执行`catkin_make`。	
 
-​	同样的，采用这个方法，依然需要配置HI226模块输出四元数。具体配置方式，查看方法2进行配置。
 
-​	进入 __serial_imu_ws__ ，执行`roslaunch imu_launch imu_rviz.launch`命令。
 
-​	执行成功后，就可以看到rviz工具已经打开了，这个时候我们还需要进行配置一下，订阅相关的话题消息，才能在rviz的世界中看到一个坐标轴随着IMU传感器的变化而变化。
 
-​	先点击左下角的 __Add__ 标签，然后在弹出窗口中，选择 __By display type__ 标签，查找 __rviz_imu_plugin__ ；找到之后，选择它下面的 __imu__ 标签，点击 __OK__ 。
-
-​	这时，我们可以看到rviz的左侧的展示窗口中已经成功添加上了Imu的标签。
-
-​	接下来在 __Global Options__ 下的 __Fixed Frame__ 中，添写 __base_link__ 。
-
-​	然后在 __Imu__ 下的 __Topic__ 中，添写 __/IMU_data__ 。
-
-​	这时，去晃动imu传感器，可以看到rviz世界中的坐标轴已经随着imu传感器的晃动发生了晃动。
-
-## FAQ
-
-​	如果在执行`rosrun serial_imu serial_imu`时候，出现如下错误：
-=======
 ![](./img/4.png)
->>>>>>> 7c616e8... [example:ROS] update readme.md
-
 ## 6. FAQ
 1. 如果在执行`rosrun serial_imu serial_imu`时候，出现如下错误：
 ![](./img/3.png)
