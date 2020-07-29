@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "packet.h"
 #include "imu_data_decode.h"
@@ -26,23 +27,6 @@ static int frame_rate;
 static uint8_t buf[2048];
 void dump_data_packet(receive_imusol_packet_t *data);
 	
-int time_out(int second)
-{
-	struct timeval time_value;
-	time_value.tv_sec = second;
-	time_value.tv_usec = 0;
-
-	return select(0, NULL, NULL, NULL, &time_value);
-}
-
-int ret_frame_count(void)
-{
-	frame_count = 0;
-	int i = time_out(1);
-
-	return frame_count;
-}
-
 int open_port(char *port_device)
 {
    struct termios options;
@@ -91,12 +75,14 @@ int open_port(char *port_device)
 	return (fd);
 }
 
-void *pthread_frame_rate(void *arg)
+void timer(int sig)
 {
-	while(1)
-		frame_rate = ret_frame_count();
-
-	pthread_exit(NULL);
+	if(SIGALRM == sig)
+	{
+		frame_rate = frame_count;
+		frame_count = 0;
+		alarm(1);
+	}
 }
 
 
@@ -108,6 +94,7 @@ int main(int argc, const char *argv[])
 	int i;
 	ssize_t n = 0;
 
+	signal(SIGALRM, timer);
 	if(argc >1)
 	{
 		strcat(dir_usb_dev, argv[1]);
@@ -119,9 +106,7 @@ int main(int argc, const char *argv[])
 		exit(0);	
 	}
 
-	pthread_t ph_rate;
-	int ret_pth = pthread_create(&ph_rate, NULL, pthread_frame_rate, NULL);
-
+	alarm(1);
 	imu_data_decode_init(); 
 				
 	while(true)
@@ -159,7 +144,6 @@ int main(int argc, const char *argv[])
 		}
 	}	
 	sleep(1);
-	pthread_join(ph_rate, NULL);
 
     close(fd);
 }
@@ -169,7 +153,7 @@ void dump_data_packet(receive_imusol_packet_t *data)
 	if(bitmap & BIT_VALID_ID)
 		printf("    Device ID:  %-8d\n",  data->id);
 	if(bitmap & BIT_VALID_TIMES)
-		printf("Run times(ms):  %-8d\n",receive_imusol.times);
+		printf("Run times(ms):  %d days  %d:%d:%d:%d \n",data->times / 86400000, data->times / 3600000 % 24, data->times / 60000 % 60, data->times / 1000 % 60, data->times % 1000);
 	printf("   Frame Rate: %4dHz\n", frame_rate);
 	if(bitmap & BIT_VALID_ACC)
 		printf("       Acc(G):	%8.3f %8.3f %8.3f\r\n",  data->acc[0],  data->acc[1],  data->acc[2]);
