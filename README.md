@@ -27,7 +27,7 @@
 <br>
 
 ## 軟體中心簡介(繁)
-<details markdown="1">
+<details markdown="1" open="">
 <summary>展開</summary>
 <h3> 
 本公司持續維護、更新產品與軟體，為用戶提供更良好的使用體驗與功能，<br>
