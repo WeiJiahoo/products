@@ -1,3 +1,5 @@
+![](img/logo.png)
+
 ## 软件及文档下载
 
 [繁體中文](https://github.com/hipnuc/products/tree/tc) |
