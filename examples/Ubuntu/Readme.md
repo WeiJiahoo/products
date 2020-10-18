@@ -18,13 +18,13 @@
 
 ​	3、然后在dev目录下执行`ls` 这个命令是查看当前目录下都有哪些文件，然后按下 Enter 键，就会出现设备文件名称，在这些文件名称中，主要关心 **ttyUSB** 这个设备文件。后面数字代表USB设备号，由于Ubuntu USB设备号为从零开始依次累加，所以多个设备每次开机后设备号是不固定的，需要确定设备的设备号。下面用两张图片来描述:
 
-![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/1.png)
+![](/img/1.png)
 
 ​	上图为没有插入USB设备的情况，这个时候，dev目录下并没有名为 __ttyUSB__ 文件，插入USB线，连接调试板，然后再次执行`ls`：
 
 dev目录下多了几个文件名称, 如图：
 
-![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/2.jpg)
+![](/img/2.jpg)
 
 ​	**ttyUSB0** 文件就是调试版在ubuntu系统中生成的设备文件，对它进行读写，就可以完成串口通信。这个文件名称我们把它记下来。后面的数字是不固定的，有可能为 **ttyUSB1**  或 **ttyUSB2** 等。
 
@@ -34,7 +34,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​		如果需要输出帧率超过100Hz，则需要需要修改main.c文件中的options.c_cflag参数，改为更高的波特率。
 
-![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/5.png)
+![](/img/5.png)
 
 ​		如图，在第83行，将B115200修改为B460800或者是B921600。
 
@@ -48,7 +48,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​	执行成功后，会出现这个画面：
 
-![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/3.png)
+![](/img/3.png)
 
 ​	这个画面上的数字会随着模块位置的改变而发生变化。
 
@@ -58,7 +58,7 @@ dev目录下多了几个文件名称, 如图：
 
 ​	如果出现：
 
-![](https://github.com/hipnuc/products/blob/master/examples/Ubuntu/img/4.png)
+![](/img/4.png)
 
 ​	表示未能找到串口，需要回到**《查找USB-UART设备》一节** 确认USB-UART设备已经被ubuntu识别。
 
