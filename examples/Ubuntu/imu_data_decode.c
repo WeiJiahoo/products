@@ -41,8 +41,8 @@ static void on_data_received(packet_t *pkt)
 	{
 		if(offset == 0)
 		{
-			frame_count++;	
-			bitmap = 0;
+		 	frame_count++;	
+			bitmap = 0; 
 		}
 		switch(p[offset])
 		{
@@ -51,6 +51,7 @@ static void on_data_received(packet_t *pkt)
 			receive_imusol.id = p[1];
 			offset += 2;
 			break;
+
 		case kItemAccRaw:
 			bitmap |= BIT_VALID_ACC;
 			stream2int16(temp, p + offset + 1);
@@ -59,7 +60,9 @@ static void on_data_received(packet_t *pkt)
 			receive_imusol.acc[2] = (float)temp[2] / 1000;
 			offset += 7;
 			break;
+
 		case kItemGyrRaw:
+		case kItemGyrRaw_yunjing:
 			bitmap |= BIT_VALID_GYR;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.gyr[0] = (float)temp[0] / 10;
@@ -67,6 +70,7 @@ static void on_data_received(packet_t *pkt)
 			receive_imusol.gyr[2] = (float)temp[2] / 10;
 			offset += 7;
 			break;
+
 		case kItemMagRaw:
 			bitmap |= BIT_VALID_MAG;
 			stream2int16(temp, p + offset + 1);
@@ -75,34 +79,35 @@ static void on_data_received(packet_t *pkt)
 			receive_imusol.mag[2] = (float)temp[2] / 10;
 			offset += 7;
 			break;
+
 		case kItemRotationEul:
 			bitmap |= BIT_VALID_EUL;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.eul[1] = (float)temp[0] / 100;
 			receive_imusol.eul[0] = (float)temp[1] / 100;
-			receive_imusol.eul[2] = (float)temp[2] / 10;
+			receive_imusol.eul[2] = (float)temp[2] / 100; 
 			offset += 7;
 			break;
+
 		case kItemRotationQuat:
 			bitmap |= BIT_VALID_QUAT;
 			memcpy(receive_imusol.quat, p + offset + 1, sizeof( receive_imusol.quat));
 			offset += 17;
 			break;
+
 		case kItemPressure:
 			offset += 5;
 			break; 
 
 		case KItemIMUSOL:
 			bitmap = BIT_VALID_ALL;
-
 			receive_imusol.id =p[offset + 1];
 			memcpy(&receive_imusol.times, p + 8, sizeof(int)); 	
 			memcpy(receive_imusol.acc, p + 12, sizeof(float) * 16);
-
 			offset += 76;
 			break;
-		case KItemGWSOL:
 
+		case KItemGWSOL:
 			receive_gwsol.tag = p[offset];
 			receive_gwsol.gw_id = p[offset + 1]; 
 			receive_gwsol.n = p[offset + 2];
@@ -117,8 +122,24 @@ static void on_data_received(packet_t *pkt)
 				offset += 76;
 			}
 			break;
+
 		default:
-			offset++;
+			/* offset ==> 0 2 9 16 23 30 47 52 76 */
+			if(0 == offset)
+				offset = 2;
+			else if(2 == offset)
+				offset = 9;
+			else if(9 == offset)
+				offset = 16;
+			else if(16 == offset)
+				offset = 23;
+			else if(23 == offset)
+				offset = 30;
+			else if(30 == offset)
+				offset == 47;
+			else if(47 == offset)
+				offset = 52;
+
 		}
 	}
 }
