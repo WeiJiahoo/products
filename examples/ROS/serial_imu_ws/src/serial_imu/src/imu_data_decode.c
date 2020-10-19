@@ -120,18 +120,7 @@ static void on_data_received(packet_t *pkt)
 			break;
 		default:
 			/* offset ==> 0 2 9 16 23 30 47 52 76  */
-			if(0 == offset)
-				offset = 2;
-			else if (2 == offset)
-				offset = 9;
-			else if (9 == offset)
-				offset = 16;
-			else if (16 == offset)
-				offset = 23; 
-			else if (23 == offset)
-				offset = 30;
-			else if (30 == offset)
-				offset = 47;
+			offset++;	
 		}
 	}
 }
