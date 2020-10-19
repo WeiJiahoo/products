@@ -60,6 +60,7 @@ static void on_data_received(packet_t *pkt)
 			offset += 7;
 			break;
 		case kItemGyrRaw:
+		case kItemGyrRaw_yunjing:
 			bitmap |= BIT_VALID_GYR;
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.gyr[0] = (float)temp[0] / 10;
@@ -118,7 +119,19 @@ static void on_data_received(packet_t *pkt)
 			}
 			break;
 		default:
-			offset++;
+			/* offset ==> 0 2 9 16 23 30 47 52 76  */
+			if(0 == offset)
+				offset = 2;
+			else if (2 == offset)
+				offset = 9;
+			else if (9 == offset)
+				offset = 16;
+			else if (16 == offset)
+				offset = 23; 
+			else if (23 == offset)
+				offset = 30;
+			else if (30 == offset)
+				offset = 47;
 		}
 	}
 }

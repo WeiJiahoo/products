@@ -43,6 +43,7 @@ typedef enum
     kItemID =                   0x90,   /* user programed ID   */
     kItemAccRaw =               0xA0,   /* raw acc             */
     kItemGyrRaw =               0xB0,   /* raw gyro            */  
+	kItemGyrRaw_yunjing =       0xB1,   /* raw gyro yunjing    */
     kItemMagRaw =               0xC0,   /* raw mag             */
     kItemRotationEul =          0xD0,   /* eular angle         */
     kItemRotationQuat =         0xD1,   /* att q               */
