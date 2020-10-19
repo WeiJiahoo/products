@@ -85,7 +85,7 @@ static void on_data_received(packet_t *pkt)
 			stream2int16(temp, p + offset + 1);
 			receive_imusol.eul[1] = (float)temp[0] / 100;
 			receive_imusol.eul[0] = (float)temp[1] / 100;
-			receive_imusol.eul[2] = (float)temp[2] / 100; 
+			receive_imusol.eul[2] = (float)temp[2] / 10; 
 			offset += 7;
 			break;
 
@@ -125,21 +125,7 @@ static void on_data_received(packet_t *pkt)
 
 		default:
 			/* offset ==> 0 2 9 16 23 30 47 52 76 */
-			if(0 == offset)
-				offset = 2;
-			else if(2 == offset)
-				offset = 9;
-			else if(9 == offset)
-				offset = 16;
-			else if(16 == offset)
-				offset = 23;
-			else if(23 == offset)
-				offset = 30;
-			else if(30 == offset)
-				offset == 47;
-			else if(47 == offset)
-				offset = 52;
-
+			offset++;
 		}
 	}
 }
