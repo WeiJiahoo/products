@@ -39,16 +39,13 @@ static void on_data_received(packet_t *pkt)
 
 	while(offset < pkt->payload_len)
 	{
-		if(offset == 0)
-		{
-			frame_count++;	
-			bitmap = 0;
-		}
+
 		switch(p[offset])
 		{
 		case kItemID:
 			bitmap |= BIT_VALID_ID;
 			receive_imusol.id = p[1];
+			bitmap = 0;
 			offset += 2;
 			break;
 		case kItemAccRaw:

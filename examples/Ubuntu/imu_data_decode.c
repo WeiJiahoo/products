@@ -12,7 +12,6 @@ static packet_t RxPkt; /* used for data receive */
  */
 
 uint8_t bitmap;
-uint32_t frame_count;
 receive_imusol_packet_t receive_imusol;
 receive_gwsol_packet_t receive_gwsol;
 
@@ -39,16 +38,12 @@ static void on_data_received(packet_t *pkt)
 
 	while(offset < pkt->payload_len)
 	{
-		if(offset == 0)
-		{
-		 	frame_count++;	
-			bitmap = 0; 
-		}
 		switch(p[offset])
 		{
 		case kItemID:
 			bitmap |= BIT_VALID_ID;
 			receive_imusol.id = p[1];
+			bitmap = 0;
 			offset += 2;
 			break;
 

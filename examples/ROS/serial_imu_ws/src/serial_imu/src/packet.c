@@ -16,6 +16,7 @@
 #define CH_ERR  (1)
 #endif
 
+uint32_t frame_count;
 
 static void crc16_update(uint16_t *currect_crc, const uint8_t *src, uint32_t len)
 {
@@ -100,6 +101,7 @@ uint32_t packet_decode(uint8_t c)
         case kStatus_Idle:
             if(c == 0x5A)
 			{
+				frame_count++;
 				status = kStatus_Cmd;
 			}
 			break;
