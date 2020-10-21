@@ -102,7 +102,6 @@ uint32_t packet_decode(uint8_t c)
             if(c == 0x5A)
 			{
 				status = kStatus_Cmd;
-				frame_count++;
 			}
 			break;
         case kStatus_Cmd:
@@ -155,6 +154,7 @@ uint32_t packet_decode(uint8_t c)
                 /* CRC match */
                 if(CRCCalculated == CRCReceived)
                 {
+					frame_count++;
                     event_handler(RxPkt);
                 }
                 status = kStatus_Idle;
